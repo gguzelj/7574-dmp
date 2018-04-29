@@ -3,4 +3,5 @@ project(7574_dmp C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_executable(7574_dmp src/main.c)
+add_executable(client src/client/main.c src/client/client.c)
+add_executable(broker src/broker/main.c src/broker/broker.c)
