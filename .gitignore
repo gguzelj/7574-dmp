@@ -69,5 +69,6 @@ CTestTestfile.cmake
 cmake-build-debug
 
 # Executables
-client
-broker
+clientd
+clientd_i
+clientd_o

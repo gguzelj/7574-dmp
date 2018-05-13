@@ -13,11 +13,13 @@ typedef int bool;
 #define CLIENT_SERVICE_REQUEST_QUEUE    1
 #define CLIENT_SERVICE_RESPONSE_QUEUE   2
 
-enum RequestType {CREATE, PUBLISH, SUBSCRIBE, RECEIVE, DESTROY};
+enum RequestType {
+    CREATE, PUBLISH, SUBSCRIBE, RECEIVE, DESTROY
+};
 
-typedef struct id {
+typedef struct clientId {
     int value;
-} id;
+} clientId_t;
 
 typedef struct topic {
     char name[20];
@@ -62,9 +64,17 @@ typedef struct request {
 } request_t;
 
 /* typedef and structs for Responses */
-enum status {OK, ERROR};
+enum statusCode {
+    OK, ERROR
+};
+
+typedef struct status {
+    enum statusCode code;
+    message_t description;
+} status_t;
 
 typedef struct createResponse {
+    clientId_t id;
 } createResponse_t;
 
 typedef struct publishResponse {
@@ -85,7 +95,8 @@ typedef struct destroyResponse {
 
 typedef struct response {
     long mtype;
-    enum status status;
+    status_t status;
+    enum RequestType type;
     union {
         createResponse_t create;
         publishResponse_t publish;
@@ -93,17 +104,17 @@ typedef struct response {
         receiveResponse_t receive;
         destroyResponse_t destroy;
     } body;
-} response;
+} response_t;
 
-typedef void (*requestHandler)(request_t*);
+typedef void (*requestHandler)(request_t *);
+typedef void (*responseHandler)(response_t *);
 
 typedef struct clientConfig {
     int port;
-    char* address;
+    char *address;
     int brokerSocket;
     int requestQueueId;
     int responseQueueId;
     bool running;
-    requestHandler requestHandlers[5];
 } clientConfig;
 #endif //INC_7574_DMP_COMMON_H
