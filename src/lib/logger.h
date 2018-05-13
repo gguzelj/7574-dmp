@@ -10,11 +10,11 @@
 #include <errno.h>
 
 static void build_log_message(char *buffer);
-void safelog(const char* format, ...);
+void safelog2(const char *format, ...);
 void safeperror(const char* format, ...);
 static void exit_message(void);
 void log_exit();
-void init_logger(const char* pname, int color);
+void init_logger2(const char *pname, int color);
 
 #endif /* _LOGGER_H_ */
 

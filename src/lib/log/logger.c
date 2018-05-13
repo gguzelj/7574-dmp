@@ -14,7 +14,6 @@ static void build_log_message(char *buffer){
     sprintf(buffer+strlen(buffer), "%s[", logConfig.name);
     sprintf(buffer+strlen(buffer), "%i]:", getpid());
 
-
     char space[50];
     memset((void*)space,*(int*)" ", 50);
     if(strlen(buffer)<FIRST_COLUMN){

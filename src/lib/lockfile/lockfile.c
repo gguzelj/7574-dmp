@@ -1,4 +1,4 @@
-#include "LockFile.h"
+#include "lockfile.h"
 
 int open_lockfile(char *filename) {
     return open(filename, O_CREAT | O_WRONLY, 0777);

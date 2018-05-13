@@ -46,7 +46,7 @@ static void build_log_message(char *buffer){
     }
 }
 
-void safelog(const char* format, ...){
+void safelog2(const char *format, ...){
     char buffer[2048];
 
     build_log_message(buffer);
@@ -80,14 +80,14 @@ void safeperror(const char* format, ...){
 }
 
 static void exit_message(void){
-    safelog("!!!!! FIN DEL PROCESO !!!!!\n");
+    safelog2("!!!!! FIN DEL PROCESO !!!!!\n");
 }
 
 void log_exit(){
     atexit(exit_message);
 }
 
-void init_logger(const char* pname, int color){
+void init_logger2(const char *pname, int color){
     strncpy(PROCESS_NAME, pname, 99);
     _color = color%NUM_COLORS;
 }

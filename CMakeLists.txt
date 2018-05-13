@@ -3,29 +3,55 @@ project(7574_dmp)
 
 set(CMAKE_C_STANDARD 11)
 
-add_executable(client
+add_executable(clientd
         src/client/main.c
         src/common/common.h
         src/client/broker_connector.h
         src/client/broker_connector.c
-        src/client/client_service.h
-        src/client/client_service.c
         src/lib/logger.h
         src/lib/logger.c
+        src/lib/lockfile/lockfile.h
+        src/lib/lockfile/lockfile.c
+        src/lib/log/logger.h
+        src/lib/log/logger.c
         src/lib/msg.c
         src/lib/msg.h)
+
+add_executable(clientd_i
+        src/client/clientd_i.c
+        src/common/common.h
+        src/client/broker_connector.h
+        src/client/broker_connector.c
+        src/lib/logger.h
+        src/lib/logger.c
+        src/lib/lockfile/lockfile.h
+        src/lib/lockfile/lockfile.c
+        src/lib/log/logger.h
+        src/lib/log/logger.c
+        src/lib/msg.c
+        src/lib/msg.h)
+
+add_executable(clientd_o
+        src/client/clientd_o.c)
 
 add_executable(aaaaa
         src/test/main.c
         src/common/common.h
         src/client/broker_connector.h
         src/client/broker_connector.c
-        src/client/client_service.h
-        src/client/client_service.c
         src/lib/logger.h
         src/lib/logger.c
+        src/lib/map.h
+        src/lib/map.c
         src/lib/msg.c
         src/lib/msg.h)
 
-add_executable(broker src/broker/main.c src/broker/broker.c src/common/common.h)
+add_executable(broker
+        src/broker/main.c
+        src/broker/broker.c
+        src/lib/lockfile/lockfile.h
+        src/lib/lockfile/lockfile.c
+        src/lib/log/logger.h
+        src/lib/log/logger.c
+        src/common/common.h)
 
