@@ -13,6 +13,6 @@ typedef struct loggerConfig {
 loggerConfig logConfig;
 
 void init_logger(char* name);
-void safelog(char *logMessage);
+void safelog(char *logMessage, ...);
 
 #endif //INC_7574_DMP_LOGGER_H
