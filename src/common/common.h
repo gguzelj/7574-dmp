@@ -1,10 +1,6 @@
 #ifndef INC_7574_DMP_COMMON_H
 #define INC_7574_DMP_COMMON_H
 
-/* Error codes */
-#define C_OK        0
-#define C_ERR       -1
-
 /* Bool definition */
 typedef int bool;
 #define true        1
@@ -35,6 +31,7 @@ typedef struct createRequest {
 } createRequest_t;
 
 typedef struct publishRequest {
+    clientId_t id;
     topic_t topic;
     message_t message;
 } publishRequest_t;
@@ -78,6 +75,7 @@ typedef struct createResponse {
 } createResponse_t;
 
 typedef struct publishResponse {
+    clientId_t id;
     topic_t topic;
     message_t message;
 } publishResponse_t;

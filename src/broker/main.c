@@ -79,6 +79,12 @@ void sendCreateResponse(int fd, request_t *pRequest) {
 
 void sendPublishResponse(int fd, request_t *request) {
     safelog("publishing on topic %s", request->body.publish.topic.name);
+    response_t publishResponse = {0} ;
+    publishResponse.type = request->type;
+    publishResponse.mtype = request->mtype;
+    publishResponse.status.code = OK;
+    publishResponse.body.publish.id = request->body.publish.id;
+    send_response(fd, &publishResponse);
 }
 
 request_t *receive_request(int fd) {
