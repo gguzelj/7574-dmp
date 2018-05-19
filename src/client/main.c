@@ -15,7 +15,7 @@
 
 bool running;
 char *prefix = "client> ";
-clientId_t *clientId;
+clientId_t clientId;
 
 void init_client();
 
@@ -112,9 +112,9 @@ void execute_create(char *str) {
         printf("wrong usage of create option!\n");
         return;
     }
-    clientId = create();
+    create(&clientId);
     //store in mapper
-    printf("Id from broker: %d\n", clientId->value);
+    printf("Id from broker: %d\n", clientId.value);
 }
 
 
@@ -134,16 +134,14 @@ void execute_publish(char *str) {
     }
 
     topic_t topic = {0};
-    strcpy(topic.name, topic_str);
-
     message_t message = {0};
+
+    strcpy(topic.name, topic_str);
     strcpy(message.value, message_str);
 
-    clientId_t id = *clientId;
-
-    status_t *response = publish(id, message, topic);
-
-    printf("publish response. Status: %d, message %s\n", response->code, response->description.value);
+    if (publish(clientId, message, topic) != OK) {
+        printf("Unexpected error while publishing!");
+    }
 }
 
 

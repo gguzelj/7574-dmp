@@ -53,8 +53,11 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
+    safelog("new connection!");
     while (running) {
+        safelog("waiting for requests!");
         request_t *request = receive_request(new_socket);
+        safelog("new request!");
         if (request->type == CREATE) {
             sendCreateResponse(new_socket, request);
         }

@@ -104,8 +104,8 @@ typedef struct response {
     } body;
 } response_t;
 
-typedef void (*requestHandler)(request_t *);
-typedef void (*responseHandler)(response_t *);
+typedef void (*requestHandler)(request_t);
+typedef void (*responseHandler)(response_t);
 
 typedef struct clientConfig {
     int port;
