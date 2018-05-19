@@ -18,6 +18,7 @@ void init_daemon(int argc, char **argv) {
     config.running = true;
     config.brokerSocket = atoi(argv[1]);
     config.responseQueueId = get_msg(atoi(argv[2]));
+    config.clientIdQueueId = get_msg(atoi(argv[3]));
     responseHandlers[CREATE] = &createHandler;
     responseHandlers[PUBLISH] = &publishHandler;
     responseHandlers[SUBSCRIBE] = &subscribeHandler;
@@ -31,7 +32,8 @@ responseHandler find_response_handler(response_t response) {
 
 void createHandler(response_t response) {
     safelog("create response received for pid %d. Id assigned %d", response.mtype, response.body.create.id.value);
-    send_msg(config.responseQueueId, &response, sizeof(response_t));
+    //Mapeo de ids
+    send_msg(config.clientIdQueueId, &response, sizeof(response_t));
 }
 
 void publishHandler(response_t response) {

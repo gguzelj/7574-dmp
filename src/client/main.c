@@ -113,8 +113,7 @@ void execute_create(char *str) {
         return;
     }
     create(&clientId);
-    //store in mapper
-    printf("Id from broker: %d\n", clientId.value);
+    printf("Id from broker: %ld\n", clientId.value);
 }
 
 

@@ -11,5 +11,6 @@ message_t* receive(clientId_t id);
 status_t* destroy(clientId_t id);
 
 int send_request(request_t* request);
-void receive_response(response_t *response);
+void receive_response(int queueId, clientId_t clientId, response_t *response);
+void receive_clientId(response_t *response);
 #endif //INC_7574_DMP_CLIENT_H

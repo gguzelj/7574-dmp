@@ -8,13 +8,14 @@ typedef int bool;
 
 #define CLIENT_SERVICE_REQUEST_QUEUE    1
 #define CLIENT_SERVICE_RESPONSE_QUEUE   2
+#define CLIENT_SERVICE_CLIEND_ID_QUEUE  3
 
 enum RequestType {
     CREATE, PUBLISH, SUBSCRIBE, RECEIVE, DESTROY
 };
 
 typedef struct clientId {
-    int value;
+    long value;
 } clientId_t;
 
 typedef struct topic {
@@ -113,6 +114,7 @@ typedef struct clientConfig {
     int brokerSocket;
     int requestQueueId;
     int responseQueueId;
+    int clientIdQueueId;
     bool running;
 } clientConfig;
 #endif //INC_7574_DMP_COMMON_H
