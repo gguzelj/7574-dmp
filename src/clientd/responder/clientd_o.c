@@ -23,6 +23,7 @@ void init_daemon(int argc, char **argv) {
     config.brokerSocket = atoi(argv[1]);
     config.responseQueueId = get_msg(atoi(argv[2]));
     config.clientIdQueueId = get_msg(atoi(argv[3]));
+    config.receiveQueueId = get_msg(atoi(argv[4]));
     responseHandlers[CREATE] = &createHandler;
     responseHandlers[PUBLISH] = &publishHandler;
     responseHandlers[SUBSCRIBE] = &subscribeHandler;
@@ -55,7 +56,9 @@ void subscribeHandler(response_t response) {
 }
 
 void receiveHandler(response_t response) {
-    safelog("Create handler invoked");
+    safelog("receive: new message from broker. topic %s for client %ld", response.body.receive.topic.name, response.id);
+    map_global_to_local(&response);
+    send_msg(config.receiveQueueId, &response, sizeof(response_t));
 }
 
 void destroyHandler(response_t response) {

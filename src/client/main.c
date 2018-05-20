@@ -161,7 +161,12 @@ void execute_receive(char *str) {
         return;
     }
 
-    printf("receiving...\n");
+    message_t message;
+    if (receive(clientId, &message) == OK) {
+        printf("new message: %s\n", message.value);
+    } else {
+        printf("ERROR\n");
+    }
 }
 
 

@@ -9,7 +9,8 @@ typedef int bool;
 #define CLIENT_SERVICE_REQUEST_QUEUE    1
 #define CLIENT_SERVICE_RESPONSE_QUEUE   2
 #define CLIENT_SERVICE_CLIEND_ID_QUEUE  3
-#define CLIENT_IDS_MAP_ID               4
+#define CLIENT_SERVICE_RECEIVE_QUEUE    4
+#define CLIENT_IDS_MAP_ID               5
 #define CLIENT_IDS_MAP_CAPACITY         1000
 
 typedef struct id_tuple {
@@ -73,6 +74,7 @@ typedef struct subscribeResponse {
 } subscribeResponse_t;
 
 typedef struct receiveResponse {
+    topic_t topic;
     message_t message;
 } receiveResponse_t;
 
@@ -102,6 +104,7 @@ typedef struct clientConfig {
     int requestQueueId;
     int responseQueueId;
     int clientIdQueueId;
+    int receiveQueueId;
     bool running;
 } clientConfig;
 #endif //INC_7574_DMP_COMMON_H
