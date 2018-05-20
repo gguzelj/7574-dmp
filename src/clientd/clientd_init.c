@@ -2,10 +2,12 @@
 #include <stdlib.h>
 #include "connector/broker_connector.h"
 #include "../lib/msg.h"
+#include "../lib/shm.h"
 
 clientConfig config;
 
 void init_daemon(int argc, char **argv);
+void create_shared_memory();
 int create_queue(int queueId);
 
 int main(int argc, char **argv) {
@@ -39,6 +41,7 @@ void init_daemon(int argc, char **argv) {
     create_queue(CLIENT_SERVICE_REQUEST_QUEUE);
     create_queue(CLIENT_SERVICE_RESPONSE_QUEUE);
     create_queue(CLIENT_SERVICE_CLIEND_ID_QUEUE);
+    create_shared_memory();
 }
 
 int create_queue(int queueId) {
@@ -48,4 +51,13 @@ int create_queue(int queueId) {
         exit(EXIT_FAILURE);
     }
     return response;
+}
+
+void create_shared_memory() {
+    int shm = create_shm(CLIENT_IDS_MAP_ID, sizeof(ids_map));
+    ids_map *map = (ids_map *) map_shm(shm);
+    for (int i = 0; i < CLIENT_IDS_MAP_CAPACITY; ++i) {
+        map[i]->globalId = 0;
+        map[i]->localId = 0;
+    }
 }

@@ -9,6 +9,15 @@ typedef int bool;
 #define CLIENT_SERVICE_REQUEST_QUEUE    1
 #define CLIENT_SERVICE_RESPONSE_QUEUE   2
 #define CLIENT_SERVICE_CLIEND_ID_QUEUE  3
+#define CLIENT_IDS_MAP_ID               4
+#define CLIENT_IDS_MAP_CAPACITY         1000
+
+typedef struct id_tuple {
+    long globalId;
+    long localId;
+} id_tuple_t;
+
+typedef id_tuple_t ids_map[CLIENT_IDS_MAP_CAPACITY];
 
 enum RequestType {
     CREATE, PUBLISH, SUBSCRIBE, RECEIVE, DESTROY

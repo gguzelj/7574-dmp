@@ -8,34 +8,14 @@
 #include "logger.h"
 #include "resources.h"
 
-int create_shm(int id, int size){
-    key_t clave;
-    clave = ftok(DIRECTORY, id);
-    return (shmget(clave, size, IPC_CREAT | IPC_EXCL | 0660));
-    /* da error si ya existe */
-}
+int create_shm(int id, int size);
 
-int get_shm(int id){
-    key_t clave;
-    clave = ftok(DIRECTORY, id);
-    return (shmget(clave, 1, 0660));
-}
+int get_shm(int id);
 
-void* map(int id){
-    void*addr = shmat(id, NULL, 0);
-    if(addr==(void*)-1){
-        safeperror("No se pudo mapear la memoria");
-        exit(-1);
-    }
-    return addr;
-}
+void *map_shm(int id);
 
-int unmap(void* addr){
-    return shmdt(addr);
-}
+int unmap(void *addr);
 
-int remove_shm(int id){
-    return (shmctl(id, IPC_RMID, (struct shmid_ds *) 0));
-}
+int remove_shm(int id);
 
 #endif /* _SHM_H_ */
