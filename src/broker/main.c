@@ -16,6 +16,8 @@ void sendPublishResponse(int fd, request_t *pRequest);
 
 void sendSubscribeResponse(int fd, request_t *pRequest);
 
+void sendDestroyResponse(int fd, request_t *pRequest);
+
 int main() {
     init_logger("broker server");
 
@@ -71,6 +73,10 @@ int main() {
         if (request->type == SUBSCRIBE) {
             sendSubscribeResponse(new_socket, request);
         }
+
+        if (request->type == DESTROY) {
+            sendDestroyResponse(new_socket, request);
+        }
     }
 
 }
@@ -107,6 +113,16 @@ void sendSubscribeResponse(int fd, request_t *request) {
     subscribeResponse.status.code = OK;
     subscribeResponse.body.subscribe.topic = request->body.subscribe.topic;
     send_response(fd, &subscribeResponse);
+}
+
+void sendDestroyResponse(int fd, request_t *request) {
+    safelog("destroy called for client %ld", request->id);
+    response_t destroyResponse = {0} ;
+    destroyResponse.type = request->type;
+    destroyResponse.mtype = request->mtype;
+    destroyResponse.id = request->id;
+    destroyResponse.status.code = OK;
+    send_response(fd, &destroyResponse);
 }
 
 request_t *receive_request(int fd) {

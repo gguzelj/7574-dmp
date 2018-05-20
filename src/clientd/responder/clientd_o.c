@@ -54,12 +54,16 @@ void subscribeHandler(response_t response) {
     send_msg(config.responseQueueId, &response, sizeof(response_t));
 }
 
-void receiveHandler(response_t request) {
+void receiveHandler(response_t response) {
     safelog("Create handler invoked");
 }
 
-void destroyHandler(response_t request) {
-    printf("destroyHandler invoked");
+void destroyHandler(response_t response) {
+    safelog("destroy: for client %ld", response.id);
+    clientId_t globalId = response.id;
+    map_global_to_local(&response);
+    delete(globalId);
+    send_msg(config.responseQueueId, &response, sizeof(response_t));
 }
 
 clientId_t create_local_id() {

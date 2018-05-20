@@ -7,6 +7,7 @@
 void init_mapper();
 
 void put(clientId_t globalId, clientId_t localId);
+void delete(clientId_t globalId);
 clientId_t get_global_id(clientId_t localId);
 clientId_t get_local_id(clientId_t localId);
 

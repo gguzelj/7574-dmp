@@ -61,7 +61,9 @@ void receiveHandler(request_t request) {
 }
 
 void destroyHandler(request_t request) {
-    printf("destroyHandler invoked");
+    safelog("destroy: for client %ld", request.id);
+    map_local_to_global(&request);
+    send_request(config.brokerSocket, &request);
 }
 
 void map_local_to_global(request_t *request) {
