@@ -1,5 +1,4 @@
 #include "clientd_i.h"
-#include "../common/common.h"
 
 int main(int argc, char **argv) {
     init_daemon(argc, argv);

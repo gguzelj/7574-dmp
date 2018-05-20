@@ -2,11 +2,12 @@
 #define INC_7574_DMP_CLIENTD_I_H
 
 #include <stdlib.h>
-#include "connector/broker_connector.h"
-#include "../common/common.h"
-#include "../lib/lockfile/lockfile.h"
-#include "../lib/log/logger.h"
-#include "../lib/msg.h"
+#include "../broker_connector/broker_connector.h"
+#include "../../common/common.h"
+#include "../../lib/lockfile/lockfile.h"
+#include "../../lib/log/logger.h"
+#include "../../lib/msg.h"
+#include "../id_mapper/id_mapper.h"
 
 /*-----------------------------------------------------------------------------
  * Client service data structures, defines, exported API, etc...

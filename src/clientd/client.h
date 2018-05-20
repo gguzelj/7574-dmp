@@ -1,8 +1,9 @@
 #ifndef INC_7574_DMP_CLIENT_H
 #define INC_7574_DMP_CLIENT_H
 
-#include "../common/common.h"
 #include <stdlib.h>
+#include "../common/common.h"
+#include "../lib/msg.h"
 
 void create(clientId_t*);
 int publish(clientId_t id, message_t message, topic_t topic);

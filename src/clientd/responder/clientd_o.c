@@ -1,5 +1,5 @@
 #include "clientd_o.h"
-#include "../common/common.h"
+#include "../../common/common.h"
 
 void create_local_id(clientId_t*);
 

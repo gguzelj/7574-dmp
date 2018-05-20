@@ -6,8 +6,8 @@ set(CMAKE_C_STANDARD 11)
 add_executable(clientd
         src/clientd/clientd_init.c
         src/common/common.h
-        src/clientd/connector/broker_connector.h
-        src/clientd/connector/broker_connector.c
+        src/clientd/broker_connector/broker_connector.h
+        src/clientd/broker_connector/broker_connector.c
         src/lib/logger.h
         src/lib/logger.c
         src/lib/lockfile/lockfile.h
@@ -20,10 +20,10 @@ add_executable(clientd
         src/lib/shm.c)
 
 add_executable(clientd_i
-        src/clientd/clientd_i.c
+        src/clientd/receiver/clientd_i.c
         src/common/common.h
-        src/clientd/connector/broker_connector.h
-        src/clientd/connector/broker_connector.c
+        src/clientd/broker_connector/broker_connector.h
+        src/clientd/broker_connector/broker_connector.c
         src/lib/logger.h
         src/lib/logger.c
         src/lib/lockfile/lockfile.h
@@ -34,13 +34,13 @@ add_executable(clientd_i
         src/lib/msg.c
         src/lib/shm.h
         src/lib/shm.c
-        src/clientd/id_mapper.h
-        src/clientd/id_mapper.c)
+        src/clientd/id_mapper/id_mapper.h
+        src/clientd/id_mapper/id_mapper.c)
 
 add_executable(clientd_o
-        src/clientd/clientd_o.c
-        src/clientd/connector/broker_connector.h
-        src/clientd/connector/broker_connector.c
+        src/clientd/responder/clientd_o.c
+        src/clientd/broker_connector/broker_connector.h
+        src/clientd/broker_connector/broker_connector.c
         src/lib/lockfile/lockfile.h
         src/lib/lockfile/lockfile.c
         src/lib/log/logger.h
@@ -51,8 +51,8 @@ add_executable(clientd_o
         src/lib/msg.c
         src/lib/shm.h
         src/lib/shm.c
-        src/clientd/id_mapper.h
-        src/clientd/id_mapper.c)
+        src/clientd/id_mapper/id_mapper.h
+        src/clientd/id_mapper/id_mapper.c)
 
 add_executable(aaaaa
         src/client/main.c

@@ -1,5 +1,4 @@
 #include "client.h"
-#include "../lib/msg.h"
 
 void build_create_request(request_t*);
 void build_publish_request(request_t*, clientId_t, topic_t, message_t);

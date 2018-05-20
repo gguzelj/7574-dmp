@@ -1,8 +1,8 @@
 #ifndef INC_7574_DMP_ID_MAPPER_H
 #define INC_7574_DMP_ID_MAPPER_H
 
-#include "../common/common.h"
-#include "../lib/shm.h"
+#include "../../common/common.h"
+#include "../../lib/shm.h"
 
 void init_mapper();
 
