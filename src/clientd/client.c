@@ -13,7 +13,7 @@ void create(clientId_t* clientId) {
     response_t response;
     receive_clientId(&response);
 
-    *clientId = response.body.create.id;
+    *clientId = response.id;
 }
 
 int publish(clientId_t id, message_t message, topic_t topic) {
@@ -74,7 +74,7 @@ void build_create_request(request_t *createRequest) {
 void build_publish_request(request_t *publishRequest, clientId_t id, topic_t topic, message_t message) {
     publishRequest->type = PUBLISH;
     publishRequest->mtype = id.value;
-    publishRequest->body.publish.id = id;
+    publishRequest->id = id;
     publishRequest->body.publish.topic = topic;
     publishRequest->body.publish.message = message;
 }
@@ -82,5 +82,6 @@ void build_publish_request(request_t *publishRequest, clientId_t id, topic_t top
 void build_subscribe_request(request_t *subscribeRequest, clientId_t id, topic_t topic) {
     subscribeRequest->type = SUBSCRIBE;
     subscribeRequest->mtype = id.value;
+    subscribeRequest->id = id;
     subscribeRequest->body.subscribe.topic = topic;
 }

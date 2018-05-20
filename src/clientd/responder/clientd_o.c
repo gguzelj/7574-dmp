@@ -1,7 +1,8 @@
 #include "clientd_o.h"
 #include "../../common/common.h"
 
-void create_local_id(clientId_t*);
+clientId_t create_local_id();
+void map_global_to_local(response_t *response);
 
 int main(int argc, char **argv) {
     init_daemon(argc, argv);
@@ -9,8 +10,7 @@ int main(int argc, char **argv) {
     do {
         response_t response;
         receive_response(config.brokerSocket, &response);
-        responseHandler handler = find_response_handler(response);
-        handler(response);
+        find_response_handler(response)(response);
     } while (config.running);
     return EXIT_SUCCESS;
 }
@@ -35,37 +35,22 @@ responseHandler find_response_handler(response_t response) {
 }
 
 void createHandler(response_t response) {
-    safelog("create response received for pid %d. Id assigned %d", response.mtype, response.body.create.id.value);
-    clientId_t localId = {0};
-    create_local_id(&localId);
-    safelog("assigning local id %ld to global id %ld", localId.value, response.body.create.id.value);
-    put(response.body.create.id, localId);
-    response.body.create.id = localId;
+    clientId_t localId = create_local_id();
+    safelog("create: client pid %d. gid: %ld. lid: %ld", response.mtype, response.id, localId);
+    put(response.id, localId);
+    map_global_to_local(&response);
     send_msg(config.clientIdQueueId, &response, sizeof(response_t));
 }
 
 void publishHandler(response_t response) {
-    clientId_t globalId = response.body.publish.id;
-    safelog("publish response received for id %d", globalId.value);
-    //Map from global id to local id
-    response.body.publish.id = get_local_id(response.body.publish.id);
-    if (response.body.publish.id.value < 0) {
-        safelog("Wrong localId %ld", globalId.value);
-    }
-    response.mtype = response.body.publish.id.value;
-    safelog("sending response to %d", response.mtype);
+    safelog("publish: topic %s for client %ld", response.body.publish.topic.name, response.id);
+    map_global_to_local(&response);
     send_msg(config.responseQueueId, &response, sizeof(response_t));
 }
 
 void subscribeHandler(response_t response) {
-    clientId_t globalId = {response.mtype} ;
-    safelog("publish response received for id %d", globalId);
-    //Map from global id to local id
-    response.mtype = get_local_id(globalId).value;
-    if (response.mtype < 0) {
-        safelog("Wrong localId %ld", globalId.value);
-    }
-    safelog("sending response to %d", response.mtype);
+    safelog("subscribe: topic %s for client %ld", response.body.subscribe.topic.name, response.id);
+    map_global_to_local(&response);
     send_msg(config.responseQueueId, &response, sizeof(response_t));
 }
 
@@ -77,8 +62,18 @@ void destroyHandler(response_t request) {
     printf("destroyHandler invoked");
 }
 
-void create_local_id(clientId_t* localId) {
-    localId->value = rand();
-    localId->value = (localId->value << 32) | rand();
-    localId->value = (localId->value % (999999999 - 100000000)) + 100000000;
+clientId_t create_local_id() {
+    clientId_t localId;
+    localId.value = rand();
+    localId.value = (localId.value << 32) | rand();
+    localId.value = (localId.value % (999999999 - 100000000)) + 100000000;
+    return localId;
+}
+
+void map_global_to_local(response_t *response) {
+    clientId_t globalId = response->id;
+    response->id = get_local_id(globalId);
+    if (response->id.value < 0) {
+        safelog("wrong globalId %ld", globalId);
+    }
 }

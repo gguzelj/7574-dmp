@@ -2,7 +2,6 @@
 #include "../common/common.h"
 #include "../lib/msg.h"
 #include "../clientd/client.h"
-#include "../clientd/id_mapper/id_mapper.h"
 
 #define KNRM  "\x1B[0m"
 #define KRED  "\x1B[31m"
@@ -16,7 +15,7 @@
 
 bool running;
 char *prefix = "client> ";
-clientId_t clientId;
+clientId_t clientId = {0};
 
 void init_client();
 
@@ -86,11 +85,11 @@ void execute_command(char *str) {
 
 void execute_create(char *str) {
     if (strtok(NULL, " ") != NULL) {
-        printf("wrong usage of create option!\n");
+        printf("incorrect use of create option!\n");
         return;
     }
     create(&clientId);
-    printf("Id from broker: %ld\n", clientId.value);
+    printf("new instance created with id: %ld\n", clientId.value);
 }
 
 
@@ -102,7 +101,12 @@ void execute_publish(char *str) {
     char *rest = strtok(NULL, " ");
 
     if (topic_str == NULL || message_str == NULL || rest != NULL) {
-        printf("wrong usage of publish option!\n");
+        printf("incorrect use of publish option!\n");
+        return;
+    }
+
+    if (clientId.value == 0) {
+        printf("no instance created. Execute \"create\"!\n");
         return;
     }
 
@@ -112,8 +116,10 @@ void execute_publish(char *str) {
     strcpy(topic.name, topic_str);
     strcpy(message.value, message_str);
 
-    if (publish(clientId, message, topic) != OK) {
-        printf("Unexpected error while publishing!");
+    if (publish(clientId, message, topic) == OK) {
+        printf("OK\n");
+    } else {
+        printf("ERROR\n");
     }
 }
 
@@ -124,7 +130,12 @@ void execute_subscribe(char *str) {
     char *rest = strtok(NULL, " ");
 
     if (topic_str == NULL || rest != NULL) {
-        printf("wrong usage of subscribe option!\n");
+        printf("incorrect use of subscribe option!\n");
+        return;
+    }
+
+    if (clientId.value == 0) {
+        printf("no instance created. Execute \"create\"!\n");
         return;
     }
 
@@ -132,14 +143,21 @@ void execute_subscribe(char *str) {
     strcpy(topic.name, topic_str);
 
     if (subscribe(clientId, topic) != OK) {
-        printf("Unexpected error while publishing!");
+        printf("Unexpected error while publishing!\n");
+    } else {
+        printf("OK\n");
     }
 }
 
 
 void execute_receive(char *str) {
     if (strtok(NULL, " ") != NULL) {
-        printf("wrong usage of receive option!\n");
+        printf("incorrect use of receive option!\n");
+        return;
+    }
+
+    if (clientId.value == 0) {
+        printf("no instance created. Execute \"create\"!\n");
         return;
     }
 
@@ -149,11 +167,21 @@ void execute_receive(char *str) {
 
 void execute_destroy(char *str) {
     if (strtok(NULL, " ") != NULL) {
-        printf("wrong usage of receive option!\n");
+        printf("incorrect use of receive option!\n");
         return;
     }
 
-    printf("destroying...\n");
+    if (clientId.value == 0) {
+        printf("no instance created. Execute \"create\"!\n");
+        return;
+    }
+
+    if (destroy(clientId) == OK) {
+        clientId.value = 0;
+        printf("OK\n");
+    } else {
+        printf("ERROR\n");
+    }
 }
 
 
@@ -166,7 +194,7 @@ void show_usage() {
     printf("%s|__|  |__|  \\______/  |__|  |__|     \\______||_______||__| |_______||__| \\__|     |__|\n", KCYN);
 
 
-    printf("%sDistributed messaging client\n",KGRN);
+    printf("%sDistributed messaging client\n", KGRN);
     printf("%sUsage: \n\n", KRED);
     printf("%screate\n", KWHT);
     printf("%screates a new instance\n\n", KRED);

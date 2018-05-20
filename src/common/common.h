@@ -34,12 +34,7 @@ typedef struct message {
 } message_t;
 
 /* typedef and structs for Requests */
-typedef struct createRequest {
-    int falopa1;
-} createRequest_t;
-
 typedef struct publishRequest {
-    clientId_t id;
     topic_t topic;
     message_t message;
 } publishRequest_t;
@@ -48,22 +43,13 @@ typedef struct subscribeRequest {
     topic_t topic;
 } subscribeRequest_t;
 
-typedef struct receiveRequest {
-    long long r1;
-} receiveRequest_t;
-
-typedef struct destroyRequest {
-} destroyRequest_t;
-
 typedef struct request {
     long mtype;
+    clientId_t id;
     enum RequestType type;
     union {
-        createRequest_t create;
         publishRequest_t publish;
         subscribeRequest_t subscribe;
-        receiveRequest_t receive;
-        destroyRequest_t destroy;
     } body;
 } request_t;
 
@@ -77,12 +63,7 @@ typedef struct status {
     message_t description;
 } status_t;
 
-typedef struct createResponse {
-    clientId_t id;
-} createResponse_t;
-
 typedef struct publishResponse {
-    clientId_t id;
     topic_t topic;
     message_t message;
 } publishResponse_t;
@@ -100,10 +81,10 @@ typedef struct destroyResponse {
 
 typedef struct response {
     long mtype;
-    status_t status;
+    clientId_t id;
     enum RequestType type;
+    status_t status;
     union {
-        createResponse_t create;
         publishResponse_t publish;
         subscribeResponse_t subscribe;
         receiveResponse_t receive;

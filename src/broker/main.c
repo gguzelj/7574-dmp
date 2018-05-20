@@ -82,7 +82,7 @@ void sendCreateResponse(int fd, request_t *pRequest) {
     createResponse.type = pRequest->type;
     createResponse.mtype = pRequest->mtype;
     createResponse.status.code = OK;
-    createResponse.body.create.id.value = newId;
+    createResponse.id.value = newId;
     send_response(fd, &createResponse);
 }
 
@@ -92,7 +92,9 @@ void sendPublishResponse(int fd, request_t *request) {
     publishResponse.type = request->type;
     publishResponse.mtype = request->mtype;
     publishResponse.status.code = OK;
-    publishResponse.body.publish.id = request->body.publish.id;
+    publishResponse.id = request->id;
+    publishResponse.body.publish.topic = request->body.publish.topic;
+    publishResponse.body.publish.message = request->body.publish.message;
     send_response(fd, &publishResponse);
 }
 
@@ -101,7 +103,9 @@ void sendSubscribeResponse(int fd, request_t *request) {
     response_t subscribeResponse = {0} ;
     subscribeResponse.type = request->type;
     subscribeResponse.mtype = request->mtype;
+    subscribeResponse.id = request->id;
     subscribeResponse.status.code = OK;
+    subscribeResponse.body.subscribe.topic = request->body.subscribe.topic;
     send_response(fd, &subscribeResponse);
 }
 
