@@ -1,7 +1,9 @@
 #include "client.h"
+#include "../common/common.h"
 
 void build_create_request(request_t*);
 void build_publish_request(request_t*, clientId_t, topic_t, message_t);
+void build_subscribe_request(request_t*, clientId_t, topic_t);
 
 void create(clientId_t* clientId) {
     request_t createRequest = {0};
@@ -25,15 +27,22 @@ int publish(clientId_t id, message_t message, topic_t topic) {
     return response.status.code;
 }
 
-status_t* subscribe(clientId_t id, topic_t topic) {
+int subscribe(clientId_t id, topic_t topic) {
+    request_t subscribeRequest = {0};
+    build_subscribe_request(&subscribeRequest, id, topic);
+    send_request(&subscribeRequest);
+
+    response_t response;
+    receive_response(CLIENT_SERVICE_RESPONSE_QUEUE, id, &response);
+
+    return response.status.code;
+}
+
+int receive(clientId_t id, message_t *message) {
     return 0;
 }
 
-message_t* receive(clientId_t id) {
-    return 0;
-}
-
-status_t* destroy(clientId_t id) {
+int destroy(clientId_t id) {
     return 0;
 }
 
@@ -68,4 +77,10 @@ void build_publish_request(request_t *publishRequest, clientId_t id, topic_t top
     publishRequest->body.publish.id = id;
     publishRequest->body.publish.topic = topic;
     publishRequest->body.publish.message = message;
+}
+
+void build_subscribe_request(request_t *subscribeRequest, clientId_t id, topic_t topic) {
+    subscribeRequest->type = SUBSCRIBE;
+    subscribeRequest->mtype = id.value;
+    subscribeRequest->body.subscribe.topic = topic;
 }

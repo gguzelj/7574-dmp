@@ -49,28 +49,6 @@ int main() {
         execute_command(cmd);
     } while (running);
 
-/*
-    while(config.running) {
-
-        send
-
-        topic_t topic;
-        strcpy(topic.name, "Falopa");
-
-        request_t request1 = {0};
-        request1.type = PUBLISH;
-        request1.mtype = getpid();
-        request1.body.publish.topic = topic;
-
-        printf("Sending body...");
-        fflush(stdout);
-        send_msg(f, &request1, sizeof(struct request));
-
-
-        sleep(2);
-
-    }*/
-
 }
 
 void execute_command(char *str) {
@@ -141,15 +119,21 @@ void execute_publish(char *str) {
 
 
 void execute_subscribe(char *str) {
-    char *topic = strtok(NULL, " ");
+    char *topic_str = strtok(NULL, "\"");
+    strtok(NULL, "\"");
     char *rest = strtok(NULL, " ");
 
-    if (topic == NULL || rest != NULL) {
+    if (topic_str == NULL || rest != NULL) {
         printf("wrong usage of subscribe option!\n");
         return;
     }
 
-    printf("Subscribing on topic %s\n", topic);
+    topic_t topic = {0};
+    strcpy(topic.name, topic_str);
+
+    if (subscribe(clientId, topic) != OK) {
+        printf("Unexpected error while publishing!");
+    }
 }
 
 

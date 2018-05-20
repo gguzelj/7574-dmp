@@ -1,8 +1,8 @@
 #include "clientd_i.h"
-#include "../../common/common.h"
 
 int main(int argc, char **argv) {
     init_daemon(argc, argv);
+    safelog("running receiver");
     do {
         request_t request = {0} ;
         read_request(&request);
@@ -54,7 +54,13 @@ void publishHandler(request_t request) {
 }
 
 void subscribeHandler(request_t request) {
-    safelog("subscribing on topic %s", request.body.subscribe.topic);
+    clientId_t localId = {request.mtype};
+    safelog("subscribing on topic %s for client %ld", request.body.subscribe.topic.name, request.mtype);
+    //Map local id to global id
+    request.mtype = get_global_id(localId).value;
+    if (request.body.publish.id.value < 0) {
+        safelog("Wrong localId %ld", localId);
+    }
     send_request(config.brokerSocket, &request);
 }
 

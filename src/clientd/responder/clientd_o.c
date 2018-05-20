@@ -57,8 +57,16 @@ void publishHandler(response_t response) {
     send_msg(config.responseQueueId, &response, sizeof(response_t));
 }
 
-void subscribeHandler(response_t request) {
-    safelog("Subscribe handler invoked");
+void subscribeHandler(response_t response) {
+    clientId_t globalId = {response.mtype} ;
+    safelog("publish response received for id %d", globalId);
+    //Map from global id to local id
+    response.mtype = get_local_id(globalId).value;
+    if (response.mtype < 0) {
+        safelog("Wrong localId %ld", globalId.value);
+    }
+    safelog("sending response to %d", response.mtype);
+    send_msg(config.responseQueueId, &response, sizeof(response_t));
 }
 
 void receiveHandler(response_t request) {

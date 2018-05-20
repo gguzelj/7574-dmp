@@ -46,7 +46,6 @@ typedef struct publishRequest {
 
 typedef struct subscribeRequest {
     topic_t topic;
-    long long r1;
 } subscribeRequest_t;
 
 typedef struct receiveRequest {

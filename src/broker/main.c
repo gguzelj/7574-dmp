@@ -14,6 +14,8 @@ void sendCreateResponse(int fd, request_t *pRequest);
 
 void sendPublishResponse(int fd, request_t *pRequest);
 
+void sendSubscribeResponse(int fd, request_t *pRequest);
+
 int main() {
     init_logger("broker server");
 
@@ -65,6 +67,10 @@ int main() {
         if (request->type == PUBLISH) {
             sendPublishResponse(new_socket, request);
         }
+
+        if (request->type == SUBSCRIBE) {
+            sendSubscribeResponse(new_socket, request);
+        }
     }
 
 }
@@ -88,6 +94,15 @@ void sendPublishResponse(int fd, request_t *request) {
     publishResponse.status.code = OK;
     publishResponse.body.publish.id = request->body.publish.id;
     send_response(fd, &publishResponse);
+}
+
+void sendSubscribeResponse(int fd, request_t *request) {
+    safelog("subscribing on topic %s", request->body.subscribe.topic.name);
+    response_t subscribeResponse = {0} ;
+    subscribeResponse.type = request->type;
+    subscribeResponse.mtype = request->mtype;
+    subscribeResponse.status.code = OK;
+    send_response(fd, &subscribeResponse);
 }
 
 request_t *receive_request(int fd) {
