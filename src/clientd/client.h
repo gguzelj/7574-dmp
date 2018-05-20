@@ -11,7 +11,7 @@ int subscribe(clientId_t id, topic_t topic);
 int receive(clientId_t id, message_t *message);
 int destroy(clientId_t id);
 
-int send_request(request_t* request);
-void receive_response(int queueId, clientId_t clientId, response_t *response);
-void receive_clientId(response_t *response);
+int send_request(request_t request);
+response_t receive_response(int queueId, clientId_t clientId);
+response_t receive_clientId();
 #endif //INC_7574_DMP_CLIENT_H
