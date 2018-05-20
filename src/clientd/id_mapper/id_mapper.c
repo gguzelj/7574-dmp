@@ -24,15 +24,29 @@ void put(clientId_t globalId, clientId_t localId) {
     exit(EXIT_FAILURE);
 }
 
-void get(clientId_t globalId, clientId_t* localId) {
+clientId_t get_global_id(clientId_t localId) {
+    clientId_t response;
     for (int i = 0; i < CLIENT_IDS_MAP_CAPACITY; ++i) {
-        if (clients_map[i].globalId == globalId.value) {
-            localId->value = clients_map[i].localId;
-            return;
+        if (clients_map[i].localId == localId.value) {
+            response.value = clients_map[i].globalId;
+            return response;
         };
     }
-    printf("Client id mapper overflow");
-    exit(EXIT_FAILURE);
+    response.value = -1;
+    return response;
+}
+
+
+clientId_t get_local_id(clientId_t globalId) {
+    clientId_t response;
+    for (int i = 0; i < CLIENT_IDS_MAP_CAPACITY; ++i) {
+        if (clients_map[i].globalId == globalId.value) {
+            response.value = clients_map[i].localId;
+            return response;
+        };
+    }
+    response.value = -1;
+    return response;
 }
 
 

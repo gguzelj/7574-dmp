@@ -2,6 +2,7 @@
 #include "../common/common.h"
 #include "../lib/msg.h"
 #include "../clientd/client.h"
+#include "../clientd/id_mapper/id_mapper.h"
 
 #define KNRM  "\x1B[0m"
 #define KRED  "\x1B[31m"
@@ -34,10 +35,8 @@ void execute_receive(char *str);
 void execute_destroy(char *str);
 
 int main() {
-
     init_client();
     show_usage();
-
     do {
         const int bufsize = BUFFER_LIMIT;
         char cmd[bufsize];
@@ -123,9 +122,6 @@ void execute_publish(char *str) {
     char *topic_str = strtok(NULL, "\"");
     strtok(NULL, "\"");
     char *rest = strtok(NULL, " ");
-
-    printf("msg: %s, topic: %s, rest: %s\n", message_str, topic_str, rest);
-
 
     if (topic_str == NULL || message_str == NULL || rest != NULL) {
         printf("wrong usage of publish option!\n");

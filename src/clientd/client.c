@@ -64,7 +64,7 @@ void build_create_request(request_t *createRequest) {
 
 void build_publish_request(request_t *publishRequest, clientId_t id, topic_t topic, message_t message) {
     publishRequest->type = PUBLISH;
-    publishRequest->mtype = getpid();
+    publishRequest->mtype = id.value;
     publishRequest->body.publish.id = id;
     publishRequest->body.publish.topic = topic;
     publishRequest->body.publish.message = message;

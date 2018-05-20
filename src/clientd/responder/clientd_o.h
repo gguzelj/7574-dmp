@@ -11,7 +11,8 @@
 #include <time.h>
 
 /*-----------------------------------------------------------------------------
- * Client service data structures, defines, exported API, etc...
+ * Client daemon responsible for dispatch requests from broker to corresponding
+ * local process. Id mapping (from global to local) happens here.
  *----------------------------------------------------------------------------*/
 clientConfig config;
 responseHandler responseHandlers[5];

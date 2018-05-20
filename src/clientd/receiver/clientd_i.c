@@ -1,4 +1,5 @@
 #include "clientd_i.h"
+#include "../../common/common.h"
 
 int main(int argc, char **argv) {
     init_daemon(argc, argv);
@@ -12,6 +13,7 @@ int main(int argc, char **argv) {
 
 void init_daemon(int argc, char **argv) {
     init_logger("Client receiver");
+    init_mapper();
     config.running = true;
     config.brokerSocket = atoi(argv[1]);
     config.requestQueueId = get_msg(atoi(argv[2]));
@@ -41,9 +43,13 @@ void createHandler(request_t request) {
 }
 
 void publishHandler(request_t request) {
-    int id = request.body.publish.id.value;
-    char *topic = request.body.publish.topic.name;
-    safelog("sending publish on topic %s for client with id %d", topic, id);
+    clientId_t localId = request.body.publish.id;
+    safelog("publishing on topic %s for client %ld", request.body.publish.topic.name, localId);
+    //Map local id to global id
+    request.body.publish.id = get_global_id(localId);
+    if (request.body.publish.id.value < 0) {
+        safelog("Wrong localId %ld", localId);
+    }
     send_request(config.brokerSocket, &request);
 }
 

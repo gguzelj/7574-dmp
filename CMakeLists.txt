@@ -21,15 +21,14 @@ add_executable(clientd
 
 add_executable(clientd_i
         src/clientd/receiver/clientd_i.c
-        src/common/common.h
         src/clientd/broker_connector/broker_connector.h
         src/clientd/broker_connector/broker_connector.c
-        src/lib/logger.h
-        src/lib/logger.c
         src/lib/lockfile/lockfile.h
         src/lib/lockfile/lockfile.c
         src/lib/log/logger.h
         src/lib/log/logger.c
+        src/lib/logger.h
+        src/lib/logger.c
         src/lib/msg.h
         src/lib/msg.c
         src/lib/shm.h
@@ -61,10 +60,16 @@ add_executable(aaaaa
         src/common/common.h
         src/lib/logger.h
         src/lib/logger.c
-        src/lib/map.h
-        src/lib/map.c
         src/lib/msg.c
-        src/lib/msg.h)
+        src/lib/msg.h
+        src/lib/shm.h
+        src/lib/shm.c
+        src/lib/lockfile/lockfile.h
+        src/lib/lockfile/lockfile.c
+        src/lib/log/logger.h
+        src/lib/log/logger.c
+        src/clientd/id_mapper/id_mapper.h
+        src/clientd/id_mapper/id_mapper.c)
 
 add_executable(broker
         src/broker/main.c

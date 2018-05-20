@@ -10,7 +10,8 @@
 #include "../id_mapper/id_mapper.h"
 
 /*-----------------------------------------------------------------------------
- * Client service data structures, defines, exported API, etc...
+ * Client daemon responsible for receiving request from local processes and
+ * forwarding to broker. Id mapping (from local to global) happens here.
  *----------------------------------------------------------------------------*/
 clientConfig config;
 requestHandler requestHandlers[5];

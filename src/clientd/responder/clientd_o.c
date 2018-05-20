@@ -45,7 +45,15 @@ void createHandler(response_t response) {
 }
 
 void publishHandler(response_t response) {
-    safelog("publish response received for id %d", response.body.publish.id.value);
+    clientId_t globalId = response.body.publish.id;
+    safelog("publish response received for id %d", globalId.value);
+    //Map from global id to local id
+    response.body.publish.id = get_local_id(response.body.publish.id);
+    if (response.body.publish.id.value < 0) {
+        safelog("Wrong localId %ld", globalId.value);
+    }
+    response.mtype = response.body.publish.id.value;
+    safelog("sending response to %d", response.mtype);
     send_msg(config.responseQueueId, &response, sizeof(response_t));
 }
 
