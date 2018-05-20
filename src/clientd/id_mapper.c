@@ -1,18 +1,22 @@
 #include "id_mapper.h"
 
-ids_map* clients_map;
+id_tuple_t* clients_map;
 void create_shared_memory();
 
-void init(int argc, char **argv) {
+void init_mapper() {
     int shm = get_shm(CLIENT_IDS_MAP_ID);
-    clients_map = (ids_map*) map_shm(shm);
+    if (shm < 0) {
+        perror("Error while mapping shared memory");
+        exit(EXIT_FAILURE);
+    }
+    clients_map = (id_tuple_t*) map_shm(shm);
 }
 
 void put(clientId_t globalId, clientId_t localId) {
     for (int i = 0; i < CLIENT_IDS_MAP_CAPACITY; ++i) {
-        if (clients_map[i]->globalId == 0) {
-            clients_map[i]->globalId = globalId.value;
-            clients_map[i]->localId = localId.value;
+        if (clients_map[i].globalId == 0) {
+            clients_map[i].globalId = globalId.value;
+            clients_map[i].localId = localId.value;
             return;
         };
     }
@@ -22,8 +26,8 @@ void put(clientId_t globalId, clientId_t localId) {
 
 void get(clientId_t globalId, clientId_t* localId) {
     for (int i = 0; i < CLIENT_IDS_MAP_CAPACITY; ++i) {
-        if (clients_map[i]->globalId == globalId.value) {
-            localId->value = clients_map[i]->localId;
+        if (clients_map[i].globalId == globalId.value) {
+            localId->value = clients_map[i].localId;
             return;
         };
     }

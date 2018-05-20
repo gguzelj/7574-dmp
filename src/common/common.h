@@ -17,8 +17,6 @@ typedef struct id_tuple {
     long localId;
 } id_tuple_t;
 
-typedef id_tuple_t ids_map[CLIENT_IDS_MAP_CAPACITY];
-
 enum RequestType {
     CREATE, PUBLISH, SUBSCRIBE, RECEIVE, DESTROY
 };

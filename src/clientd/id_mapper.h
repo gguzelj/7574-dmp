@@ -4,7 +4,7 @@
 #include "../common/common.h"
 #include "../lib/shm.h"
 
-void init(int argc, char **argv);
+void init_mapper();
 
 void put(clientId_t globalId, clientId_t localId);
 void get(clientId_t globalId, clientId_t* localId);

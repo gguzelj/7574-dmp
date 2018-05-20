@@ -15,7 +15,9 @@ add_executable(clientd
         src/lib/log/logger.h
         src/lib/log/logger.c
         src/lib/msg.c
-        src/lib/msg.h)
+        src/lib/msg.h
+        src/lib/shm.h
+        src/lib/shm.c)
 
 add_executable(clientd_i
         src/clientd/clientd_i.c
@@ -28,8 +30,12 @@ add_executable(clientd_i
         src/lib/lockfile/lockfile.c
         src/lib/log/logger.h
         src/lib/log/logger.c
+        src/lib/msg.h
         src/lib/msg.c
-        src/lib/msg.h)
+        src/lib/shm.h
+        src/lib/shm.c
+        src/clientd/id_mapper.h
+        src/clientd/id_mapper.c)
 
 add_executable(clientd_o
         src/clientd/clientd_o.c
@@ -41,8 +47,12 @@ add_executable(clientd_o
         src/lib/log/logger.c
         src/lib/logger.h
         src/lib/logger.c
+        src/lib/msg.h
         src/lib/msg.c
-        src/lib/msg.h)
+        src/lib/shm.h
+        src/lib/shm.c
+        src/clientd/id_mapper.h
+        src/clientd/id_mapper.c)
 
 add_executable(aaaaa
         src/client/main.c

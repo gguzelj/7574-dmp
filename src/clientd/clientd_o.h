@@ -7,6 +7,8 @@
 #include "../lib/lockfile/lockfile.h"
 #include "../lib/log/logger.h"
 #include "../lib/msg.h"
+#include "id_mapper.h"
+#include <time.h>
 
 /*-----------------------------------------------------------------------------
  * Client service data structures, defines, exported API, etc...

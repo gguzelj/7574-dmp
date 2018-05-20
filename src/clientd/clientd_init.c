@@ -54,10 +54,10 @@ int create_queue(int queueId) {
 }
 
 void create_shared_memory() {
-    int shm = create_shm(CLIENT_IDS_MAP_ID, sizeof(ids_map));
-    ids_map *map = (ids_map *) map_shm(shm);
+    int shm = create_shm(CLIENT_IDS_MAP_ID, sizeof(id_tuple_t) * CLIENT_IDS_MAP_CAPACITY);
+    id_tuple_t *map = (id_tuple_t *) map_shm(shm);
     for (int i = 0; i < CLIENT_IDS_MAP_CAPACITY; ++i) {
-        map[i]->globalId = 0;
-        map[i]->localId = 0;
+        map[i].globalId = 0;
+        map[i].localId = 0;
     }
 }
