@@ -12,6 +12,7 @@ typedef int bool;
 #define CLIENT_SERVICE_RECEIVE_QUEUE    4
 #define CLIENT_IDS_MAP_ID               5
 #define CLIENT_IDS_MAP_CAPACITY         1000
+#define CLIENT_PID_FILE                 "/tmp/cliendd.pid"
 
 typedef struct id_tuple {
     long globalId;

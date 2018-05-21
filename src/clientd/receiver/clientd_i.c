@@ -57,7 +57,7 @@ void subscribeHandler(request_t request) {
 }
 
 void receiveHandler(request_t request) {
-    safelog("Create handler invoked");
+    safelog("this function was supposed to not be called");
 }
 
 void destroyHandler(request_t request) {

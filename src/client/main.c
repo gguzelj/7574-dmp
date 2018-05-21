@@ -75,11 +75,15 @@ void execute_command(char *str) {
         return;
     }
 
-    if (strcmp("destroy", pch) == 0 || strcmp("quit", pch) == 0 || strcmp("q", pch) == 0) {
+    if (strcmp("destroy", pch) == 0) {
         execute_destroy(str);
         return;
     }
 
+    if (strcmp("quit", pch) == 0 || strcmp("q", pch) == 0) {
+        printf("Cya!");
+        return;
+    }
     printf("Unrecognized option!\n");
 }
 

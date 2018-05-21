@@ -8,6 +8,9 @@ function build {
     make
 }
 
+function delete_pid_file {
+    rm /tmp/cliendd.pid
+}
 function clean_ipc {
     echo "Cleaning ipc"
     #remove queues
@@ -21,4 +24,5 @@ function clean_ipc {
 }
 
 clean_ipc
+delete_pid_file
 build
