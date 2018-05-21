@@ -9,7 +9,6 @@ request_t *receive_request(int fd);
 
 void send_response(int fd, response_t *response);
 
-
 void sendCreateResponse(int fd, request_t *pRequest);
 
 void sendPublishResponse(int fd, request_t *pRequest);
