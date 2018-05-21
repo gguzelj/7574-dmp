@@ -1,41 +1,59 @@
 #include "broker.h"
 
+
 brokerConfig config;
 
-int main() {
-    init_logger("broker server");
-    init_broker();
+int create_queue(int queueId);
 
+int main() {
+    init_broker();
+    start_workers();
     while (config.running) {
         safelog("waiting for new connections");
         int fd = accept_new_connection();
         create_new_connection_handlers(fd);
     }
+}
 
+void start_workers() {
+    char receive_queue[10], response_queue[10];
+    COPY(receive_queue, BROKER_RECEIVE_QUEUE);
+    COPY(response_queue, BROKER_RESPONSE_QUEUE);
+    for (int i = 0; i < BROKER_AMOUNT_WORKERS; ++i) {
+        if (fork() == 0) {
+            execl("./worker", "./worker", receive_queue, response_queue, NULL);
+            exit(EXIT_FAILURE);
+        }
+    }
 }
 
 void create_new_connection_handlers(int client_socket) {
-    char socket[10];
-    snprintf(socket, sizeof(socket), "%d", client_socket);
+    char socket[10], receive_queue[10], response_queue[10];
+    COPY(socket, client_socket);
+    COPY(receive_queue, BROKER_RECEIVE_QUEUE);
+    COPY(response_queue, BROKER_RESPONSE_QUEUE);
 
     int receiverFd = fork();
     if (receiverFd == 0) {
         safelog("launching broker connection receiver...");
-        execl("./broker_i", "./broker_i", socket, NULL);
+        execl("./broker_i", "./broker_i", socket, receive_queue, NULL);
         exit(EXIT_FAILURE);
     }
 
     int responderFd = fork();
     if (responderFd == 0) {
         safelog("launching broker connection responder...");
-        execl("./broker_o", "./broker_o", socket, NULL);
+        execl("./broker_o", "./broker_o", socket, response_queue, NULL);
         exit(EXIT_FAILURE);
     }
 }
 
 
 void init_broker() {
+    init_logger("broker server");
     fill_config();
+    create_queue(BROKER_RECEIVE_QUEUE);
+    create_queue(BROKER_RESPONSE_QUEUE);
     create_socket();
     bind_socket();
     listen_socket();
@@ -82,4 +100,13 @@ int accept_new_connection() {
     }
     safelog("new connection!");
     return newConnection;
+}
+
+int create_queue(int queueId) {
+    int response = create_msg(queueId);
+    if (response < 0) {
+        perror("Can not create IPC message queue");
+        exit(EXIT_FAILURE);
+    }
+    return response;
 }

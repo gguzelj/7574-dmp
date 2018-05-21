@@ -21,11 +21,11 @@ int main(int argc, char **argv) {
     init_daemon(argc, argv);
 
     char broker_socket[10], request_queue[10], response_queue[10], clientId_queue[10], receive_queue[10];
-    snprintf(broker_socket, sizeof(broker_socket), "%d", config.brokerSocket);
-    snprintf(request_queue, sizeof(request_queue), "%d", CLIENT_SERVICE_REQUEST_QUEUE);
-    snprintf(response_queue, sizeof(response_queue), "%d", CLIENT_SERVICE_RESPONSE_QUEUE);
-    snprintf(clientId_queue, sizeof(clientId_queue), "%d", CLIENT_SERVICE_CLIEND_ID_QUEUE);
-    snprintf(receive_queue, sizeof(receive_queue), "%d", CLIENT_SERVICE_RECEIVE_QUEUE);
+    COPY(broker_socket, config.brokerSocket);
+    COPY(request_queue, CLIENT_SERVICE_REQUEST_QUEUE);
+    COPY(response_queue, CLIENT_SERVICE_RESPONSE_QUEUE);
+    COPY(clientId_queue, CLIENT_SERVICE_CLIEND_ID_QUEUE);
+    COPY(receive_queue, CLIENT_SERVICE_RECEIVE_QUEUE);
 
     int receiverFd = fork();
     if (receiverFd == 0) {

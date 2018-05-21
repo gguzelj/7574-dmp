@@ -2,7 +2,6 @@
 
 void map_local_to_global(request_t *request);
 
-
 int main(int argc, char **argv) {
     init_daemon(argc, argv);
     safelog("running receiver");
@@ -20,11 +19,7 @@ void init_daemon(int argc, char **argv) {
     config.running = true;
     config.brokerSocket = atoi(argv[1]);
     config.requestQueueId = get_msg(atoi(argv[2]));
-    requestHandlers[CREATE] = &createHandler;
-    requestHandlers[PUBLISH] = &publishHandler;
-    requestHandlers[SUBSCRIBE] = &subscribeHandler;
-    requestHandlers[RECEIVE] = &receiveHandler;
-    requestHandlers[DESTROY] = &destroyHandler;
+    DEFINE_REQUEST_HANDLERS
 }
 
 void read_request(request_t *request) {

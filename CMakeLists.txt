@@ -76,6 +76,10 @@ add_executable(broker
         src/broker/broker.c
         src/lib/lockfile/lockfile.h
         src/lib/lockfile/lockfile.c
+        src/lib/msg.h
+        src/lib/msg.c
+        src/lib/logger.h
+        src/lib/logger.c
         src/lib/log/logger.h
         src/lib/log/logger.c
         src/common/common.h)
@@ -84,6 +88,10 @@ add_executable(broker_i
         src/broker/receiver/broker_receiver.h
         src/broker/receiver/broker_receiver.c
         src/common/common.h
+        src/lib/msg.h
+        src/lib/msg.c
+        src/lib/logger.h
+        src/lib/logger.c
         src/lib/lockfile/lockfile.h
         src/lib/lockfile/lockfile.c
         src/lib/log/logger.h
@@ -93,6 +101,23 @@ add_executable(broker_o
         src/broker/responder/broker_responder.h
         src/broker/responder/broker_responder.c
         src/common/common.h
+        src/lib/msg.h
+        src/lib/msg.c
+        src/lib/logger.h
+        src/lib/logger.c
+        src/lib/lockfile/lockfile.h
+        src/lib/lockfile/lockfile.c
+        src/lib/log/logger.h
+        src/lib/log/logger.c)
+
+add_executable(worker
+        src/broker/worker/worker.h
+        src/broker/worker/worker.c
+        src/common/common.h
+        src/lib/msg.h
+        src/lib/msg.c
+        src/lib/logger.h
+        src/lib/logger.c
         src/lib/lockfile/lockfile.h
         src/lib/lockfile/lockfile.c
         src/lib/log/logger.h

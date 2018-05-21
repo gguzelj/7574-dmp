@@ -1,7 +1,22 @@
 #ifndef INC_7574_DMP_COMMON_H
 #define INC_7574_DMP_COMMON_H
 
-#include <netinet/in.h>
+#define COPY(target, source) snprintf(target, sizeof(target), "%d", source);
+#define DEFINE_REQUEST_HANDLERS                             \
+            requestHandlers[CREATE] = &createHandler;       \
+            requestHandlers[PUBLISH] = &publishHandler;     \
+            requestHandlers[SUBSCRIBE] = &subscribeHandler; \
+            requestHandlers[RECEIVE] = &receiveHandler;     \
+            requestHandlers[DESTROY] = &destroyHandler;
+
+#define DEFINE_RESPONSE_HANDLERS                                \
+            responseHandlers[CREATE] = &createHandler;          \
+            responseHandlers[PUBLISH] = &publishHandler;        \
+            responseHandlers[SUBSCRIBE] = &subscribeHandler;    \
+            responseHandlers[RECEIVE] = &receiveHandler;        \
+            responseHandlers[DESTROY] = &destroyHandler;
+
+
 
 /* Bool definition */
 typedef int bool;
@@ -16,8 +31,13 @@ typedef int bool;
 #define CLIENT_IDS_MAP_CAPACITY         1000
 #define CLIENT_PID_FILE                 "/tmp/cliendd.pid"
 
-#define BROKER_LISTENING_PORT           8000
+#define BROKER_RECEIVE_QUEUE            6
+#define BROKER_RESPONSE_QUEUE           7
 #define BROKER_CAPACITY                 100
+#define BROKER_LISTENING_PORT           8000
+#define BROKER_AMOUNT_WORKERS           3
+
+#include <netinet/in.h>
 
 typedef struct id_tuple {
     long globalId;
@@ -121,6 +141,8 @@ typedef struct brokerConfig {
     int clientFd;
     int capacity;
     struct sockaddr_in address;
+    int receiveQueue;
+    int responseQueue;
 } brokerConfig;
 
 #endif //INC_7574_DMP_COMMON_H

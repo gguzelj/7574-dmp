@@ -6,8 +6,11 @@
 #include <netinet/in.h>
 #include <stdlib.h>
 #include "../common/common.h"
+#include "../lib/msg.h"
 #include "../lib/log/logger.h"
 
+
+void start_workers();
 
 void init_broker();
 

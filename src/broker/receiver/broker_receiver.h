@@ -1,9 +1,11 @@
 #ifndef INC_7574_DMP_BROKER_RECEIVER_H
 #define INC_7574_DMP_BROKER_RECEIVER_H
 
+#include <netinet/in.h>
 #include <stdlib.h>
 #include "../../common/common.h"
 #include "../../lib/log/logger.h"
+#include "../../lib/msg.h"
 
 /*-----------------------------------------------------------------------------
  * Broker connection handler responsible for receiving request from clients and

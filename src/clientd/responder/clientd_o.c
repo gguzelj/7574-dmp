@@ -24,11 +24,7 @@ void init_daemon(int argc, char **argv) {
     config.responseQueueId = get_msg(atoi(argv[2]));
     config.clientIdQueueId = get_msg(atoi(argv[3]));
     config.receiveQueueId = get_msg(atoi(argv[4]));
-    responseHandlers[CREATE] = &createHandler;
-    responseHandlers[PUBLISH] = &publishHandler;
-    responseHandlers[SUBSCRIBE] = &subscribeHandler;
-    responseHandlers[RECEIVE] = &receiveHandler;
-    responseHandlers[DESTROY] = &destroyHandler;
+    DEFINE_RESPONSE_HANDLERS
 }
 
 responseHandler find_response_handler(response_t response) {

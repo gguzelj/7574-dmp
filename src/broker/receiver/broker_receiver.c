@@ -18,11 +18,8 @@ void init_receiver(int argc, char **argv) {
     init_logger("broker receiver");
     config.running = true;
     config.clientFd = atoi(argv[1]);
-    requestHandlers[CREATE] = &createHandler;
-    requestHandlers[PUBLISH] = &publishHandler;
-    requestHandlers[SUBSCRIBE] = &subscribeHandler;
-    requestHandlers[RECEIVE] = &receiveHandler;
-    requestHandlers[DESTROY] = &destroyHandler;
+    config.receiveQueue = get_msg(atoi(argv[2]));
+    DEFINE_REQUEST_HANDLERS
 }
 
 /**
@@ -31,7 +28,7 @@ void init_receiver(int argc, char **argv) {
  */
 void createHandler(request_t request) {
     safelog("create: client pid %d", request.mtype);
-    //send_request(config.brokerSocket, &request);
+    send_msg(config.receiveQueue, &request, sizeof(request_t));
 }
 
 void publishHandler(request_t request) {
