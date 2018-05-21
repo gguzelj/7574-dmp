@@ -1,4 +1,5 @@
-//
-// Created by German Guzelj on 20/5/18.
-//
+#include "worker.h"
 
+void init_worker(int argc, char **argv) {
+
+}
