@@ -30,18 +30,14 @@ int main(int argc, char **argv) {
     int receiverFd = fork();
     if (receiverFd == 0) {
         printf("Launching client receiver...");
-        execl("./clientd_i", "./clientd_i", broker_socket, request_queue, 0);
+        execl("./clientd_i", "./clientd_i", broker_socket, request_queue, NULL);
         exit(EXIT_FAILURE);
     }
 
     int responderFd = fork();
     if (responderFd == 0) {
         printf("Launching client responder...");
-        if (execl("./clientd_o", "./clientd_o", broker_socket, response_queue, clientId_queue, receive_queue, NULL) ==
-            -1) {
-            perror("clientd_o error:");
-            exit(EXIT_FAILURE);
-        }
+        execl("./clientd_o", "./clientd_o", broker_socket, response_queue, clientId_queue, receive_queue, NULL);
         exit(EXIT_FAILURE);
     }
 
@@ -51,7 +47,7 @@ int main(int argc, char **argv) {
 
 void init_daemon(int argc, char **argv) {
     config.address = argv[1];
-    config.port = atoi(argv[2]);
+    config.port = BROKER_LISTENING_PORT;
     config.brokerSocket = create_broker_socket(config.address, config.port);
     create_queue(CLIENT_SERVICE_REQUEST_QUEUE);
     create_queue(CLIENT_SERVICE_RESPONSE_QUEUE);

@@ -1,6 +1,8 @@
 #ifndef INC_7574_DMP_COMMON_H
 #define INC_7574_DMP_COMMON_H
 
+#include <netinet/in.h>
+
 /* Bool definition */
 typedef int bool;
 #define true        1
@@ -13,6 +15,9 @@ typedef int bool;
 #define CLIENT_IDS_MAP_ID               5
 #define CLIENT_IDS_MAP_CAPACITY         1000
 #define CLIENT_PID_FILE                 "/tmp/cliendd.pid"
+
+#define BROKER_LISTENING_PORT           8000
+#define BROKER_CAPACITY                 100
 
 typedef struct id_tuple {
     long globalId;
@@ -108,4 +113,14 @@ typedef struct clientConfig {
     int receiveQueueId;
     bool running;
 } clientConfig;
+
+typedef struct brokerConfig {
+    int port;
+    bool running;
+    int brokerFd;
+    int clientFd;
+    int capacity;
+    struct sockaddr_in address;
+} brokerConfig;
+
 #endif //INC_7574_DMP_COMMON_H

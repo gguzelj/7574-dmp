@@ -3,13 +3,6 @@
 
 #include "broker_connector.h"
 
-CreateResponse* CreateResponse_new(enum brokerStatus status, long id) {
-    CreateResponse* response = malloc(sizeof(CreateResponse));
-    response->status = status;
-    response->id = id;
-    return response;
-}
-
 int create_broker_socket(char* address, int port) {
     int sock = 0;
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {

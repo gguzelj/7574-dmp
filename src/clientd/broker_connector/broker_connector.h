@@ -12,15 +12,6 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 
-
-enum brokerStatus {O, ERRO};
-
-typedef struct CreateResponse {
-    enum brokerStatus status;
-    long id;
-} CreateResponse;
-CreateResponse* CreateResponse_new(enum brokerStatus status, long id);
-
 int create_broker_socket(char* address, int port);
 void send_request(int fd, request_t* request);
 void receive_response(int fd, response_t*);
