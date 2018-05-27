@@ -21,6 +21,8 @@ void init_responder(int argc, char **argv) {
     config.running = true;
     config.clientFd = atoi(argv[1]);
     config.responseQueue = get_msg(atoi(argv[2]));
+    config.brokerId.value = atoi(argv[3]);
+    safelog("responder id %ld", config.brokerId);
     DEFINE_RESPONSE_HANDLERS
 }
 
@@ -29,18 +31,18 @@ void init_responder(int argc, char **argv) {
  * The process that read the broker response is the clientd_o
  */
 void createHandler(response_t response) {
-    safelog("create: client pid %d", response.mtype);
+    safelog("create: client pid %d", response.context.clientId);
     send_response(config.clientFd, &response);
 }
 
 void publishHandler(response_t response) {
-    safelog("publish: topic %s for client %ld", response.body.publish.topic.name, response.id);
+    safelog("publish: topic %s for client %ld", response.body.publish.topic.name, response.context.clientId);
     //map_local_to_global(&request);
     //send_request(config.brokerSocket, &request);
 }
 
 void subscribeHandler(response_t response) {
-    safelog("subscribe: on topic %s for client %ld", response.body.subscribe.topic.name, response.id);
+    safelog("subscribe: on topic %s for client %ld", response.body.subscribe.topic.name, response.context.clientId);
     //map_local_to_global(&request);
     // send_request(config.brokerSocket, &request);
 }
@@ -50,7 +52,7 @@ void receiveHandler(response_t response) {
 }
 
 void destroyHandler(response_t response) {
-    safelog("destroy: for client %ld", response.id);
+    safelog("destroy: for client %ld", response.context.clientId);
     //map_local_to_global(&request);
     //send_request(config.brokerSocket, &request);
 }
@@ -65,6 +67,7 @@ void send_response(int fd, response_t *response) {
 
 response_t receive_response() {
     response_t response;
-    receive_msg(config.responseQueue, &response, sizeof(response_t), 0);
+    receive_msg(config.responseQueue, &response, sizeof(response_t), config.brokerId.value);
+    response.mtype = response.context.clientId.value;
     return response;
 }

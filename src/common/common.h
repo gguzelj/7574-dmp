@@ -52,6 +52,10 @@ typedef struct clientId {
     long value;
 } clientId_t;
 
+typedef struct brokerId {
+    long value;
+} brokerId_t;
+
 typedef struct topic {
     char name[20];
 } topic_t;
@@ -59,6 +63,11 @@ typedef struct topic {
 typedef struct message {
     char value[200];
 } message_t;
+
+typedef struct context {
+    clientId_t clientId;
+    brokerId_t brokerId;
+} context_t;
 
 /* typedef and structs for Requests */
 typedef struct publishRequest {
@@ -72,7 +81,7 @@ typedef struct subscribeRequest {
 
 typedef struct request {
     long mtype;
-    clientId_t id;
+    context_t context;
     enum RequestType type;
     union {
         publishRequest_t publish;
@@ -89,6 +98,10 @@ typedef struct status {
     enum statusCode code;
     message_t description;
 } status_t;
+
+typedef struct createResponse {
+    clientId_t id;
+} createResponse_t;
 
 typedef struct publishResponse {
     topic_t topic;
@@ -109,10 +122,11 @@ typedef struct destroyResponse {
 
 typedef struct response {
     long mtype;
-    clientId_t id;
+    context_t context;
     enum RequestType type;
     status_t status;
     union {
+        createResponse_t create;
         publishResponse_t publish;
         subscribeResponse_t subscribe;
         receiveResponse_t receive;
@@ -143,6 +157,7 @@ typedef struct brokerConfig {
     struct sockaddr_in address;
     int receiveQueue;
     int responseQueue;
+    brokerId_t brokerId;
 } brokerConfig;
 
 #endif //INC_7574_DMP_COMMON_H

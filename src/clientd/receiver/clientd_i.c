@@ -14,7 +14,7 @@ int main(int argc, char **argv) {
 }
 
 void init_daemon(int argc, char **argv) {
-    init_logger("Client receiver");
+    init_logger("client receiver");
     init_mapper();
     config.running = true;
     config.brokerSocket = atoi(argv[1]);
@@ -36,17 +36,18 @@ requestHandler find_request_handler(request_t request) {
  */
 void createHandler(request_t request) {
     safelog("create: client pid %d", request.mtype);
+    request.context.clientId.value = request.mtype;
     send_request(config.brokerSocket, &request);
 }
 
 void publishHandler(request_t request) {
-    safelog("publish: topic %s for client %ld", request.body.publish.topic.name, request.id);
+    safelog("publish: topic %s for client %ld", request.body.publish.topic.name, request.context.clientId);
     map_local_to_global(&request);
     send_request(config.brokerSocket, &request);
 }
 
 void subscribeHandler(request_t request) {
-    safelog("subscribe: on topic %s for client %ld", request.body.subscribe.topic.name, request.id);
+    safelog("subscribe: on topic %s for client %ld", request.body.subscribe.topic.name, request.context.clientId);
     map_local_to_global(&request);
     send_request(config.brokerSocket, &request);
 }
@@ -56,15 +57,15 @@ void receiveHandler(request_t request) {
 }
 
 void destroyHandler(request_t request) {
-    safelog("destroy: for client %ld", request.id);
+    safelog("destroy: for client %ld", request.context.clientId);
     map_local_to_global(&request);
     send_request(config.brokerSocket, &request);
 }
 
 void map_local_to_global(request_t *request) {
-    clientId_t localId = request->id;
-    request->id = get_global_id(localId);
-    if (request->id.value < 0) {
+    clientId_t localId = request->context.clientId;
+    request->context.clientId = get_global_id(localId);
+    if (request->context.clientId.value < 0) {
         safelog("Wrong localId %ld", localId);
     }
 }

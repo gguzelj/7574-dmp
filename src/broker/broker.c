@@ -2,8 +2,10 @@
 
 
 brokerConfig config;
+int idSequence;
 
 int create_queue(int queueId);
+int new_broker_id();
 
 int main() {
     init_broker();
@@ -28,22 +30,23 @@ void start_workers() {
 }
 
 void create_new_connection_handlers(int client_socket) {
-    char socket[10], receive_queue[10], response_queue[10];
+    char socket[10], receive_queue[10], response_queue[10], broker_id[3];
     COPY(socket, client_socket);
     COPY(receive_queue, BROKER_RECEIVE_QUEUE);
     COPY(response_queue, BROKER_RESPONSE_QUEUE);
+    COPY(broker_id, new_broker_id());
 
     int receiverFd = fork();
     if (receiverFd == 0) {
         safelog("launching broker connection receiver...");
-        execl("./broker_i", "./broker_i", socket, receive_queue, NULL);
+        execl("./broker_i", "./broker_i", socket, receive_queue, broker_id, NULL);
         exit(EXIT_FAILURE);
     }
 
     int responderFd = fork();
     if (responderFd == 0) {
         safelog("launching broker connection responder...");
-        execl("./broker_o", "./broker_o", socket, response_queue, NULL);
+        execl("./broker_o", "./broker_o", socket, response_queue, broker_id, NULL);
         exit(EXIT_FAILURE);
     }
 }
@@ -57,6 +60,7 @@ void init_broker() {
     create_socket();
     bind_socket();
     listen_socket();
+    idSequence = 13; //why not?
 }
 
 void fill_config() {
@@ -109,4 +113,8 @@ int create_queue(int queueId) {
         exit(EXIT_FAILURE);
     }
     return response;
+}
+
+int new_broker_id() {
+    return idSequence++;
 }

@@ -16,7 +16,7 @@ int main(int argc, char **argv) {
 }
 
 void init_daemon(int argc, char **argv) {
-    init_logger("Client responder");
+    init_logger("client responder");
     init_mapper();
     srand(time(NULL));
     config.running = true;
@@ -33,33 +33,33 @@ responseHandler find_response_handler(response_t response) {
 
 void createHandler(response_t response) {
     clientId_t localId = create_local_id();
-    safelog("create: client pid %d. gid: %ld. lid: %ld", response.mtype, response.id, localId);
-    put(response.id, localId);
+    safelog("create: client pid %d. gid: %ld. lid: %ld", response.mtype, response.body.create.id, localId);
+    put(response.body.create.id, localId);
     map_global_to_local(&response);
     send_msg(config.clientIdQueueId, &response, sizeof(response_t));
 }
 
 void publishHandler(response_t response) {
-    safelog("publish: topic %s for client %ld", response.body.publish.topic.name, response.id);
+    safelog("publish: topic %s for client %ld", response.body.publish.topic.name, response.context.clientId);
     map_global_to_local(&response);
     send_msg(config.responseQueueId, &response, sizeof(response_t));
 }
 
 void subscribeHandler(response_t response) {
-    safelog("subscribe: topic %s for client %ld", response.body.subscribe.topic.name, response.id);
+    safelog("subscribe: topic %s for client %ld", response.body.subscribe.topic.name, response.context.clientId);
     map_global_to_local(&response);
     send_msg(config.responseQueueId, &response, sizeof(response_t));
 }
 
 void receiveHandler(response_t response) {
-    safelog("receive: new message from broker. topic %s for client %ld", response.body.receive.topic.name, response.id);
+    safelog("receive: new message from broker. topic %s for client %ld", response.body.receive.topic.name, response.context.clientId);
     map_global_to_local(&response);
     send_msg(config.receiveQueueId, &response, sizeof(response_t));
 }
 
 void destroyHandler(response_t response) {
-    safelog("destroy: for client %ld", response.id);
-    clientId_t globalId = response.id;
+    safelog("destroy: for client %ld", response.context.clientId);
+    clientId_t globalId = response.context.clientId;
     map_global_to_local(&response);
     delete(globalId);
     send_msg(config.responseQueueId, &response, sizeof(response_t));
@@ -74,9 +74,9 @@ clientId_t create_local_id() {
 }
 
 void map_global_to_local(response_t *response) {
-    clientId_t globalId = response->id;
-    response->id = get_local_id(globalId);
-    if (response->id.value < 0) {
+    clientId_t globalId = response->body.create.id;
+    response->body.create.id = get_local_id(globalId);
+    if (response->body.create.id.value < 0) {
         safelog("wrong globalId %ld", globalId);
     }
 }

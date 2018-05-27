@@ -1,14 +1,20 @@
 #include "client.h"
+#include "../common/common.h"
 
 request_t build_create_request();
+
 request_t build_publish_request(clientId_t, topic_t, message_t);
+
 request_t build_subscribe_request(clientId_t, topic_t);
+
 request_t build_destroy_request(clientId_t);
 
-void create(clientId_t* clientId) {
+void create(clientId_t *clientId) {
     send_request(build_create_request());
-    response_t response = receive_clientId();
-    *clientId = response.id;
+    clientId_t pid;
+    pid.value = getpid();
+    response_t response = receive_response(CLIENT_SERVICE_CLIEND_ID_QUEUE, pid);
+    *clientId = response.body.create.id;
 }
 
 int publish(clientId_t id, message_t message, topic_t topic) {
@@ -23,7 +29,7 @@ int subscribe(clientId_t id, topic_t topic) {
     return response.status.code;
 }
 
-int receive(clientId_t id, message_t* message) {
+int receive(clientId_t id, message_t *message) {
     response_t response = receive_response(CLIENT_SERVICE_RECEIVE_QUEUE, id);
     *message = response.body.receive.message;
     return response.status.code;
@@ -52,11 +58,6 @@ response_t receive_response(int queueId, clientId_t clientId) {
     return response;
 }
 
-response_t receive_clientId() {
-    clientId_t clientId = {getpid()};
-    return receive_response(CLIENT_SERVICE_CLIEND_ID_QUEUE, clientId);
-}
-
 request_t build_create_request() {
     request_t createRequest = {0};
     createRequest.type = CREATE;
@@ -68,7 +69,7 @@ request_t build_publish_request(clientId_t id, topic_t topic, message_t message)
     request_t publishRequest = {0};
     publishRequest.type = PUBLISH;
     publishRequest.mtype = id.value;
-    publishRequest.id = id;
+    publishRequest.context.clientId = id;
     publishRequest.body.publish.topic = topic;
     publishRequest.body.publish.message = message;
     return publishRequest;
@@ -78,7 +79,7 @@ request_t build_subscribe_request(clientId_t id, topic_t topic) {
     request_t subscribeRequest = {0};
     subscribeRequest.type = SUBSCRIBE;
     subscribeRequest.mtype = id.value;
-    subscribeRequest.id = id;
+    subscribeRequest.context.clientId = id;
     subscribeRequest.body.subscribe.topic = topic;
     return subscribeRequest;
 }
@@ -87,6 +88,6 @@ request_t build_destroy_request(clientId_t id) {
     request_t destroyRequest = {0};
     destroyRequest.type = DESTROY;
     destroyRequest.mtype = id.value;
-    destroyRequest.id = id;
+    destroyRequest.context.clientId = id;
     return destroyRequest;
 }

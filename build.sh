@@ -11,6 +11,11 @@ function build {
 function delete_pid_file {
     rm /tmp/cliendd.pid
 }
+
+function delete_log_file {
+    rm /tmp/dist_2017.log
+}
+
 function clean_ipc {
     echo "Cleaning ipc"
     #remove queues
@@ -25,4 +30,5 @@ function clean_ipc {
 
 clean_ipc
 delete_pid_file
+delete_log_file
 build

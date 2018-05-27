@@ -38,6 +38,7 @@ void receive_response(int fd, response_t *buffer) {
     do {
         received += recv(fd, &buffer[received], sizeof(response_t) - received, 0);
     } while (received < sizeof(response_t));
+    buffer->mtype = buffer->context.clientId.value;
 }
 
 #endif //INC_7574_DMP_BROKER_CONNECTOR_C
