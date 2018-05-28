@@ -1,4 +1,5 @@
 #include "broker_responder.h"
+#include "../../common/common.h"
 
 void send_response(int fd, response_t *response);
 
@@ -46,7 +47,7 @@ void subscribeHandler(response_t response) {
 }
 
 void receiveHandler(response_t response) {
-    safelog("receive: on topic %s for client %ld", response.body.subscribe.topic.name, response.context.clientId);
+    safelog("receive: on topic %s for client %ld", response.body.receive.topic.name, response.context.clientId);
     send_response(config.clientFd, &response);
 }
 

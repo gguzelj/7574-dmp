@@ -4,6 +4,9 @@
 #include <stdio.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include "../common/common.h"
 #include "../lib/msg.h"

@@ -5,7 +5,10 @@ brokerConfig config;
 int idSequence;
 
 int create_queue(int queueId);
+
 int new_broker_id();
+
+void init_db();
 
 int main() {
     init_broker();
@@ -61,6 +64,7 @@ void init_broker() {
     bind_socket();
     listen_socket();
     idSequence = 13; //why not?
+    init_db();
 }
 
 void fill_config() {
@@ -117,4 +121,12 @@ int create_queue(int queueId) {
 
 int new_broker_id() {
     return idSequence++;
+}
+
+void init_db() {
+    //create subs folder
+    struct stat st = {0};
+    if (stat(BROKER_DB_SUBS_FOLDER, &st) == -1) {
+        mkdir(BROKER_DB_SUBS_FOLDER, 0700);
+    }
 }

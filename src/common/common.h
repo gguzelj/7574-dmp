@@ -35,7 +35,10 @@ typedef int bool;
 #define BROKER_RESPONSE_QUEUE           7
 #define BROKER_CAPACITY                 100
 #define BROKER_LISTENING_PORT           8000
-#define BROKER_AMOUNT_WORKERS           3
+#define BROKER_AMOUNT_WORKERS           1
+
+#define BROKER_DB_SUBS_FOLDER           "/tmp/subs/"
+#define BROKER_DB_SUBS_EXT              ".db"
 
 #include <netinet/in.h>
 
