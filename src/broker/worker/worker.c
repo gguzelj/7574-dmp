@@ -7,7 +7,7 @@ clientId_t create_global_id();
 
 void dispatch(brokerId_t brokerId, topic_t topic, message_t message);
 
-FILE *open_subs_file(topic_t topic, const char* mode);
+FILE *open_subs_file(topic_t topic, const char *mode);
 
 void subscribe_client(clientId_t clientId, topic_t topic);
 
@@ -105,7 +105,7 @@ void dispatch(brokerId_t brokerId, topic_t topic, message_t message) {
 
     response_t receiveResponse = {0};
 
-    char * line = NULL;
+    char *line = NULL;
     size_t len = 0;
     while (getline(&line, &len, fd) != -1) {
         receiveResponse.type = RECEIVE;
@@ -126,22 +126,41 @@ void dispatch(brokerId_t brokerId, topic_t topic, message_t message) {
 }
 
 void subscribe_client(clientId_t clientId, topic_t topic) {
-    FILE *fd = open_subs_file(topic, "a");
+    FILE *fd = open_subs_file(topic, "r");
     if (fd == NULL) {
-        safelog("unexpected error while creating subs file %s", topic.name);
+        safelog("unexpected error while opening subs file %s", topic.name);
         exit(EXIT_FAILURE);
     }
-    //TODO check already subscribed
+
+    char *line = NULL;
+    size_t len = 0;
+    char id[100];
+
+    snprintf(id, sizeof(id), "%ld", clientId.value);
+    safelog("subscribing client with id %s", id);
+
+    while (getline(&line, &len, fd) != -1) {
+        safelog("%s", id);
+        safelog("%s", line);
+        if (strcmp(id, line) == 0) {
+            safelog("client with id %ld already subscribed", clientId);
+            return;
+        }
+    }
     fprintf(fd, "%ld\n", clientId.value);
     fclose(fd);
 }
 
-FILE * open_subs_file(topic_t topic, const char* mode) {
+FILE *open_subs_file(topic_t topic, const char *mode) {
     char filename[100];
     strcpy(filename, BROKER_DB_SUBS_FOLDER);
     strcat(filename, topic.name);
     strcat(filename, BROKER_DB_SUBS_EXT);
-    return fopen(filename, mode);
+    if (access(filename, F_OK) != -1) {
+        return fopen(filename, mode);
+    } else {
+        return fopen(filename, "a+");
+    }
 }
 
 response_t copy_request_to_response(request_t request) {
