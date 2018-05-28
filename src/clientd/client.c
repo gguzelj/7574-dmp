@@ -1,5 +1,4 @@
 #include "client.h"
-#include "../common/common.h"
 
 request_t build_create_request();
 

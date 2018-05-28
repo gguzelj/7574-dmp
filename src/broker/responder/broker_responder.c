@@ -37,24 +37,22 @@ void createHandler(response_t response) {
 
 void publishHandler(response_t response) {
     safelog("publish: topic %s for client %ld", response.body.publish.topic.name, response.context.clientId);
-    //map_local_to_global(&request);
-    //send_request(config.brokerSocket, &request);
+    send_response(config.clientFd, &response);
 }
 
 void subscribeHandler(response_t response) {
     safelog("subscribe: on topic %s for client %ld", response.body.subscribe.topic.name, response.context.clientId);
-    //map_local_to_global(&request);
-    // send_request(config.brokerSocket, &request);
+    send_response(config.clientFd, &response);
 }
 
 void receiveHandler(response_t response) {
-    safelog("this function was supposed to not be called");
+    safelog("receive: on topic %s for client %ld", response.body.subscribe.topic.name, response.context.clientId);
+    send_response(config.clientFd, &response);
 }
 
 void destroyHandler(response_t response) {
     safelog("destroy: for client %ld", response.context.clientId);
-    //map_local_to_global(&request);
-    //send_request(config.brokerSocket, &request);
+    send_response(config.clientFd, &response);
 }
 
 void send_response(int fd, response_t *response) {

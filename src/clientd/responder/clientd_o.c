@@ -3,6 +3,7 @@
 
 clientId_t create_local_id();
 void map_global_to_local(response_t *response);
+int localIdSequence;
 
 int main(int argc, char **argv) {
     init_daemon(argc, argv);
@@ -24,6 +25,7 @@ void init_daemon(int argc, char **argv) {
     config.responseQueueId = get_msg(atoi(argv[2]));
     config.clientIdQueueId = get_msg(atoi(argv[3]));
     config.receiveQueueId = get_msg(atoi(argv[4]));
+    localIdSequence = 0;
     DEFINE_RESPONSE_HANDLERS
 }
 
@@ -35,7 +37,9 @@ void createHandler(response_t response) {
     clientId_t localId = create_local_id();
     safelog("create: client pid %d. gid: %ld. lid: %ld", response.mtype, response.body.create.id, localId);
     put(response.body.create.id, localId);
-    map_global_to_local(&response);
+    response.mtype = response.context.clientId.value;
+    response.context.clientId = localId;
+    response.body.create.id = localId;
     send_msg(config.clientIdQueueId, &response, sizeof(response_t));
 }
 
@@ -66,17 +70,17 @@ void destroyHandler(response_t response) {
 }
 
 clientId_t create_local_id() {
-    clientId_t localId;
-    localId.value = rand();
-    localId.value = (localId.value << 32) | rand();
-    localId.value = (localId.value % (999999999 - 100000000)) + 100000000;
-    return localId;
+    clientId_t response;
+    localIdSequence++;
+    response.value = localIdSequence;
+    return response;
 }
 
 void map_global_to_local(response_t *response) {
-    clientId_t globalId = response->body.create.id;
-    response->body.create.id = get_local_id(globalId);
-    if (response->body.create.id.value < 0) {
+    clientId_t globalId = response->context.clientId;
+    response->context.clientId = get_local_id(globalId);
+    if (response->context.clientId.value < 0) {
         safelog("wrong globalId %ld", globalId);
     }
+    response->mtype = response->context.clientId.value;
 }

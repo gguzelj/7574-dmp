@@ -36,14 +36,12 @@ void createHandler(request_t request) {
 
 void publishHandler(request_t request) {
     safelog("publish: topic %s for client %ld", request.body.publish.topic.name, request.context.clientId);
-    //map_local_to_global(&request);
-    //send_request(config.brokerSocket, &request);
+    send_msg(config.receiveQueue, &request, sizeof(request_t));
 }
 
 void subscribeHandler(request_t request) {
     safelog("subscribe: on topic %s for client %ld", request.body.subscribe.topic.name, request.context.clientId);
-    //map_local_to_global(&request);
-    // send_request(config.brokerSocket, &request);
+    send_msg(config.receiveQueue, &request, sizeof(request_t));
 }
 
 void receiveHandler(request_t request) {
@@ -52,8 +50,7 @@ void receiveHandler(request_t request) {
 
 void destroyHandler(request_t request) {
     safelog("destroy: for client %ld", request.context.clientId);
-    //map_local_to_global(&request);
-    //send_request(config.brokerSocket, &request);
+    send_msg(config.receiveQueue, &request, sizeof(request_t));
 }
 
 request_t receive_request() {
