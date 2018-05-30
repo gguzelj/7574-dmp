@@ -14,7 +14,8 @@ function delete_pid_file {
 
 function delete_log_file {
     rm /tmp/dist_2017.log
-    rm -rf /tmp/subs
+    rm -rf /tmp/topics
+    rm -rf /tmp/clients
 }
 
 function clean_ipc {

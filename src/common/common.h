@@ -37,8 +37,22 @@ typedef int bool;
 #define BROKER_LISTENING_PORT           8000
 #define BROKER_AMOUNT_WORKERS           1
 
-#define BROKER_DB_SUBS_FOLDER           "/tmp/subs/"
-#define BROKER_DB_SUBS_EXT              ".db"
+#define BROKER_DB_TOPIC_FOLDER           "/tmp/topics/"
+#define BROKER_DB_TOPIC_EXT              ".db"
+#define BROKER_DB_CLIENTS_FOLDER         "/tmp/clients/"
+#define BROKER_DB_CLIENTS_EXT            ".db"
+
+#define TOPIC_FILE(filename, topicName)                 \
+            strcpy(filename, BROKER_DB_TOPIC_FOLDER);   \
+            strcat(filename, topicName);                \
+            strcat(filename, BROKER_DB_TOPIC_EXT);
+
+#define CLIENT_FILE(filename, clientId)                     \
+            char id[100];                                   \
+            snprintf(id, sizeof(id), "%ld", clientId.value);\
+            strcpy(filename, BROKER_DB_CLIENTS_FOLDER);     \
+            strcat(filename, id);                           \
+            strcat(filename, BROKER_DB_CLIENTS_EXT);
 
 #include <netinet/in.h>
 

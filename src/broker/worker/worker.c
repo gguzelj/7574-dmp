@@ -7,12 +7,15 @@ clientId_t create_global_id();
 
 void dispatch(brokerId_t brokerId, topic_t topic, message_t message);
 
-FILE *open_subs_file(topic_t topic, const char *mode);
-
 void subscribe_client(clientId_t clientId, topic_t topic);
 
 response_t copy_request_to_response(request_t request);
 
+brokerId_t find_broker_id(clientId_t clientId);
+
+void add_client_to_topic_file(clientId_t id, topic_t topic);
+
+void add_client_to_clients_file(clientId_t id, brokerId_t brokerId);
 
 int main(int argc, char **argv) {
     init_worker(argc, argv);
@@ -45,6 +48,9 @@ void createHandler(request_t request) {
     response_t createResponse = copy_request_to_response(request);
     createResponse.status.code = OK;
     createResponse.body.create.id = newId;
+
+    add_client_to_clients_file(newId, request.context.brokerId);
+
     send_msg(config.responseQueue, &createResponse, sizeof(response_t));
 }
 
@@ -97,7 +103,10 @@ clientId_t create_global_id() {
 }
 
 void dispatch(brokerId_t brokerId, topic_t topic, message_t message) {
-    FILE *fd = open_subs_file(topic, "r");
+    char filename[100];
+    TOPIC_FILE(filename, topic.name);
+    FILE *fd = fopen(filename, "r");
+
     if (fd == NULL) {
         safelog("no subscriptions for topic %s", topic.name);
         return;
@@ -105,18 +114,20 @@ void dispatch(brokerId_t brokerId, topic_t topic, message_t message) {
 
     response_t receiveResponse = {0};
 
+    long clientId;
     char *line = NULL;
     size_t len = 0;
     while (getline(&line, &len, fd) != -1) {
+        clientId = atoi(line);
         receiveResponse.type = RECEIVE;
         receiveResponse.mtype = brokerId.value;
         receiveResponse.status.code = OK;
         receiveResponse.body.receive.message = message;
         receiveResponse.body.receive.topic = topic;
-        receiveResponse.context.clientId.value = atoi(line);
-        receiveResponse.context.brokerId = brokerId;
+        receiveResponse.context.clientId.value = clientId;
+        receiveResponse.context.brokerId = find_broker_id(receiveResponse.context.clientId);
 
-        safelog("publishing message to client %s", line);
+        safelog("publishing message to client %s with broker id %ld", line, receiveResponse.context.brokerId);
         send_msg(config.responseQueue, &receiveResponse, sizeof(response_t));
     }
 
@@ -126,7 +137,15 @@ void dispatch(brokerId_t brokerId, topic_t topic, message_t message) {
 }
 
 void subscribe_client(clientId_t clientId, topic_t topic) {
-    FILE *fd = open_subs_file(topic, "r");
+    add_client_to_topic_file(clientId, topic);
+}
+
+void add_client_to_topic_file(clientId_t clientId, topic_t topic) {
+    char filename[100];
+    TOPIC_FILE(filename, topic.name);
+    char* mode = (access(filename, F_OK) != -1) ? "r" : "a+";
+
+    FILE *fd = fopen(filename, mode);
     if (fd == NULL) {
         safelog("unexpected error while opening subs file %s", topic.name);
         exit(EXIT_FAILURE);
@@ -135,32 +154,53 @@ void subscribe_client(clientId_t clientId, topic_t topic) {
     char *line = NULL;
     size_t len = 0;
     char id[100];
-
     snprintf(id, sizeof(id), "%ld", clientId.value);
-    safelog("subscribing client with id %s", id);
 
     while (getline(&line, &len, fd) != -1) {
-        safelog("%s", id);
-        safelog("%s", line);
         if (strcmp(id, line) == 0) {
             safelog("client with id %ld already subscribed", clientId);
             return;
         }
     }
+
+    safelog("adding client %ld subscription to topic %s", clientId.value, topic.name);
     fprintf(fd, "%ld\n", clientId.value);
     fclose(fd);
 }
 
-FILE *open_subs_file(topic_t topic, const char *mode) {
+void add_client_to_clients_file(clientId_t clientId, brokerId_t brokerId) {
     char filename[100];
-    strcpy(filename, BROKER_DB_SUBS_FOLDER);
-    strcat(filename, topic.name);
-    strcat(filename, BROKER_DB_SUBS_EXT);
-    if (access(filename, F_OK) != -1) {
-        return fopen(filename, mode);
-    } else {
-        return fopen(filename, "a+");
+    CLIENT_FILE(filename, clientId);
+    FILE *fd = fopen(filename, "a+");
+    if (fd == NULL) {
+        safelog("unexpected error while creating client id file");
+        exit(EXIT_FAILURE);
     }
+    fprintf(fd, "%ld,%ld", clientId.value, brokerId.value);
+    fclose(fd);
+}
+
+
+brokerId_t find_broker_id(clientId_t clientId) {
+    brokerId_t response;
+    char filename[100];
+    CLIENT_FILE(filename, clientId);
+    if (access(filename, F_OK) == -1) {
+        safelog("No broker id found for client id %ld", clientId);
+        response.value = -1;
+        return response;
+    }
+    FILE *fd = fopen(filename, "r");
+    char *line = NULL;
+    size_t len = 0;
+
+    while (getline(&line, &len, fd) != -1) {
+        strtok(line, ",");
+        response.value = atoi(strtok (NULL, ","));
+        return response;
+    }
+    response.value = -1;
+    return response;
 }
 
 response_t copy_request_to_response(request_t request) {

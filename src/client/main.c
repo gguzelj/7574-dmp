@@ -166,8 +166,9 @@ void execute_receive(char *str) {
     }
 
     message_t message;
-    if (receive(clientId, &message) == OK) {
-        printf("new message: %s\n", message.value);
+    topic_t topic;
+    if (receive(clientId, &topic, &message) == OK) {
+        printf("[%s]: %s\n", topic.name, message.value);
     } else {
         printf("ERROR\n");
     }

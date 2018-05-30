@@ -8,7 +8,7 @@
 void create(clientId_t*);
 int publish(clientId_t id, message_t message, topic_t topic);
 int subscribe(clientId_t id, topic_t topic);
-int receive(clientId_t id, message_t *message);
+int receive(clientId_t id, topic_t *topic, message_t *message);
 int destroy(clientId_t id);
 
 int send_request(request_t request);

@@ -124,9 +124,12 @@ int new_broker_id() {
 }
 
 void init_db() {
-    //create subs folder
     struct stat st = {0};
-    if (stat(BROKER_DB_SUBS_FOLDER, &st) == -1) {
-        mkdir(BROKER_DB_SUBS_FOLDER, 0700);
+    if (stat(BROKER_DB_TOPIC_FOLDER, &st) == -1) {
+        mkdir(BROKER_DB_TOPIC_FOLDER, 0700);
+    }
+
+    if (stat(BROKER_DB_CLIENTS_FOLDER, &st) == -1) {
+        mkdir(BROKER_DB_CLIENTS_FOLDER, 0700);
     }
 }

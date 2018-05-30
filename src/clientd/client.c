@@ -28,9 +28,10 @@ int subscribe(clientId_t id, topic_t topic) {
     return response.status.code;
 }
 
-int receive(clientId_t id, message_t *message) {
+int receive(clientId_t id, topic_t *topic, message_t *message) {
     response_t response = receive_response(CLIENT_SERVICE_RECEIVE_QUEUE, id);
     *message = response.body.receive.message;
+    *topic = response.body.receive.topic;
     return response.status.code;
 }
 

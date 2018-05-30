@@ -1,5 +1,4 @@
 #include "broker_responder.h"
-#include "../../common/common.h"
 
 void send_response(int fd, response_t *response);
 
