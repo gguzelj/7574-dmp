@@ -16,6 +16,7 @@ function delete_log_file {
     rm /tmp/dist_2017.log
     rm -rf /tmp/topics
     rm -rf /tmp/clients
+    rm -rf /tmp/brokers
 }
 
 function clean_ipc {

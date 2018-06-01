@@ -132,4 +132,9 @@ void init_db() {
     if (stat(BROKER_DB_CLIENTS_FOLDER, &st) == -1) {
         mkdir(BROKER_DB_CLIENTS_FOLDER, 0700);
     }
+
+    if (stat(BROKER_DB_BROKERS_FOLDER, &st) == -1) {
+        mkdir(BROKER_DB_BROKERS_FOLDER, 0700);
+    }
+
 }

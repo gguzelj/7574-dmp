@@ -6,6 +6,7 @@
 #include "../../lib/log/logger.h"
 #include "../../common/common.h"
 #include "../../lib/msg.h"
+#include "../db/db.h"
 
 /*-----------------------------------------------------------------------------
  * Broker worker

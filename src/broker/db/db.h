@@ -13,5 +13,6 @@ void add_client_to_topic_file(clientId_t clientId, topic_t topic);
 void remove_client_from_topic_file(clientId_t clientId, topic_t topic);
 void add_topic_to_client_file(clientId_t clientId, topic_t topic);
 void remove_client(clientId_t clientId);
+brokerId_t find_broker_id(clientId_t clientId);
 
 #endif //INC_7574_DMP_DB_H

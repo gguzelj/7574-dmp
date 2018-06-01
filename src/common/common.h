@@ -41,6 +41,8 @@ typedef int bool;
 #define BROKER_DB_TOPIC_EXT              ".db"
 #define BROKER_DB_CLIENTS_FOLDER         "/tmp/clients/"
 #define BROKER_DB_CLIENTS_EXT            ".db"
+#define BROKER_DB_BROKERS_FOLDER         "/tmp/brokers/"
+#define BROKER_DB_BROKERS_EXT            ".db"
 
 #define TOPIC_FILE(filename, topicName)                 \
             strcpy(filename, BROKER_DB_TOPIC_FOLDER);   \
@@ -49,10 +51,17 @@ typedef int bool;
 
 #define CLIENT_FILE(filename, clientId)                     \
             char id[100];                                   \
-            snprintf(id, sizeof(id), "%ld", clientId.value);\
+            snprintf(id, sizeof(id), "%ld", clientId);\
             strcpy(filename, BROKER_DB_CLIENTS_FOLDER);     \
             strcat(filename, id);                           \
             strcat(filename, BROKER_DB_CLIENTS_EXT);
+
+#define BROKER_FILE(filename, clientId)                         \
+            char id_str[100];                                   \
+            snprintf(id_str, sizeof(id_str), "%ld", clientId);  \
+            strcpy(filename, BROKER_DB_BROKERS_FOLDER);         \
+            strcat(filename, id_str);                           \
+            strcat(filename, BROKER_DB_BROKERS_EXT);
 
 #include <netinet/in.h>
 

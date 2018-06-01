@@ -69,7 +69,7 @@ add_executable(aaaaa
         src/lib/log/logger.h
         src/lib/log/logger.c
         src/clientd/id_mapper/id_mapper.h
-        src/clientd/id_mapper/id_mapper.c)
+        src/clientd/id_mapper/id_mapper.c src/broker/db/db.h src/broker/db/db.c)
 
 add_executable(broker
         src/broker/broker.h
@@ -113,6 +113,22 @@ add_executable(broker_o
 add_executable(worker
         src/broker/worker/worker.h
         src/broker/worker/worker.c
+        src/common/common.h
+        src/broker/db/db.h
+        src/broker/db/db.c
+        src/lib/msg.h
+        src/lib/msg.c
+        src/lib/logger.h
+        src/lib/logger.c
+        src/lib/lockfile/lockfile.h
+        src/lib/lockfile/lockfile.c
+        src/lib/log/logger.h
+        src/lib/log/logger.c)
+
+add_executable(testing
+        src/broker/main.c
+        src/broker/db/db.h
+        src/broker/db/db.c
         src/common/common.h
         src/lib/msg.h
         src/lib/msg.c
