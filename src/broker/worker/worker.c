@@ -1,11 +1,9 @@
 #include <sys/time.h>
 #include "worker.h"
 
-void read_request(request_t *request);
-
 clientId_t create_global_id();
 
-void dispatch(brokerId_t brokerId, topic_t topic, message_t message);
+void dispatch(topic_t topic, message_t message);
 
 response_t copy_request_to_response(request_t request);
 
@@ -13,9 +11,7 @@ int main(int argc, char **argv) {
     init_worker(argc, argv);
     safelog("waiting for requests to process");
     do {
-        // request_t request = receive_request();
-        request_t request = {0};
-        read_request(&request);
+        request_t request = receive_request();
         find_request_handler(request)(request);
     } while (config.running);
     return EXIT_SUCCESS;
@@ -27,10 +23,11 @@ requestHandler find_request_handler(request_t request) {
 
 void init_worker(int argc, char **argv) {
     init_logger("worker");
-    srand(time(NULL));
     config.running = true;
     config.receiveQueue = get_msg(atoi(argv[1]));
     config.responseQueue = get_msg(atoi(argv[2]));
+    config.workerId = atoi(argv[3]);
+    srand((unsigned int) config.workerId);
     DEFINE_REQUEST_HANDLERS
 }
 
@@ -52,7 +49,7 @@ void publishHandler(request_t request) {
     publishResponse.status.code = OK;
 
     //dispatch to others...
-    dispatch(request.context.brokerId, request.body.publish.topic, request.body.publish.message);
+    dispatch(request.body.publish.topic, request.body.publish.message);
 
     send_msg(config.responseQueue, &publishResponse, sizeof(response_t));
 }
@@ -83,10 +80,6 @@ void destroyHandler(request_t request) {
     send_msg(config.responseQueue, &destroyResponse, sizeof(response_t));
 }
 
-void read_request(request_t *request) {
-    receive_msg(config.receiveQueue, request, sizeof(request_t), 0);
-}
-
 request_t receive_request() {
     request_t request;
     receive_msg(config.receiveQueue, &request, sizeof(request_t), 0);
@@ -101,7 +94,7 @@ clientId_t create_global_id() {
     return globalId;
 }
 
-void dispatch(brokerId_t brokerId, topic_t topic, message_t message) {
+void dispatch(topic_t topic, message_t message) {
     char filename[100];
     TOPIC_FILE(filename, topic.name);
     FILE *fd = fopen(filename, "r");
@@ -119,14 +112,14 @@ void dispatch(brokerId_t brokerId, topic_t topic, message_t message) {
     while (getline(&line, &len, fd) != -1) {
         clientId = atoi(line);
         receiveResponse.type = RECEIVE;
-        receiveResponse.mtype = brokerId.value;
+        receiveResponse.context.clientId.value = clientId;
+        receiveResponse.context.brokerId = find_broker_id(receiveResponse.context.clientId);
+        receiveResponse.mtype = receiveResponse.context.brokerId.value;
         receiveResponse.status.code = OK;
         receiveResponse.body.receive.message = message;
         receiveResponse.body.receive.topic = topic;
-        receiveResponse.context.clientId.value = clientId;
-        receiveResponse.context.brokerId = find_broker_id(receiveResponse.context.clientId);
 
-        safelog("publishing message to client %s with broker id %ld", line, receiveResponse.context.brokerId);
+        safelog("publishing message to client %ld with broker id %ld", clientId, receiveResponse.context.brokerId);
         send_msg(config.responseQueue, &receiveResponse, sizeof(response_t));
     }
 

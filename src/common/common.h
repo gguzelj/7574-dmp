@@ -35,7 +35,7 @@ typedef int bool;
 #define BROKER_RESPONSE_QUEUE           7
 #define BROKER_CAPACITY                 100
 #define BROKER_LISTENING_PORT           8000
-#define BROKER_AMOUNT_WORKERS           1
+#define BROKER_AMOUNT_WORKERS           3
 
 #define BROKER_DB_TOPIC_FOLDER           "/tmp/topics/"
 #define BROKER_DB_TOPIC_EXT              ".db"
@@ -184,6 +184,7 @@ typedef struct brokerConfig {
     int receiveQueue;
     int responseQueue;
     brokerId_t brokerId;
+    int workerId;
 } brokerConfig;
 
 #endif //INC_7574_DMP_COMMON_H

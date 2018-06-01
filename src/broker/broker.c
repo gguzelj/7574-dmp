@@ -1,3 +1,4 @@
+#include <sys/time.h>
 #include "broker.h"
 
 
@@ -21,12 +22,15 @@ int main() {
 }
 
 void start_workers() {
-    char receive_queue[10], response_queue[10];
+    char receive_queue[10], response_queue[10], worker_id[10];
     COPY(receive_queue, BROKER_RECEIVE_QUEUE);
     COPY(response_queue, BROKER_RESPONSE_QUEUE);
     for (int i = 0; i < BROKER_AMOUNT_WORKERS; ++i) {
+        COPY(worker_id, config.workerId);
+        config.workerId++;
         if (fork() == 0) {
-            execl("./worker", "./worker", receive_queue, response_queue, NULL);
+            safelog("initing worker with id %s", worker_id);
+            execl("./worker", "./worker", receive_queue, response_queue, worker_id, NULL);
             exit(EXIT_FAILURE);
         }
     }
@@ -56,6 +60,7 @@ void create_new_connection_handlers(int client_socket) {
 
 
 void init_broker() {
+    srand(time(NULL));
     init_logger("broker server");
     fill_config();
     create_queue(BROKER_RECEIVE_QUEUE);
@@ -74,6 +79,7 @@ void fill_config() {
     config.address.sin_family = AF_INET;
     config.address.sin_addr.s_addr = INADDR_ANY;
     config.address.sin_port = htons(config.port);
+    config.workerId = 1;
 }
 
 void create_socket() {

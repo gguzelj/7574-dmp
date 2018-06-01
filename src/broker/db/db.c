@@ -144,7 +144,7 @@ brokerId_t find_broker_id(clientId_t clientId) {
     char filename[100];
     BROKER_FILE(filename, clientId.value);
     if (access(filename, F_OK) == -1) {
-        safelog("No broker id found for client id %ld", clientId);
+        safelog("No broker id found for client id %ld. file %s", clientId, filename);
         response.value = -1;
         return response;
     }
