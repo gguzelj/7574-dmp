@@ -6,8 +6,8 @@ set(CMAKE_C_STANDARD 11)
 add_executable(clientd
         src/clientd/clientd_init.c
         src/common/common.h
-        src/clientd/broker_connector/broker_connector.h
-        src/clientd/broker_connector/broker_connector.c
+        src/common/broker_connector/broker_connector.h
+        src/common/broker_connector/broker_connector.c
         src/lib/logger.h
         src/lib/logger.c
         src/lib/lockfile/lockfile.h
@@ -21,8 +21,8 @@ add_executable(clientd
 
 add_executable(clientd_i
         src/clientd/receiver/clientd_i.c
-        src/clientd/broker_connector/broker_connector.h
-        src/clientd/broker_connector/broker_connector.c
+        src/common/broker_connector/broker_connector.h
+        src/common/broker_connector/broker_connector.c
         src/lib/lockfile/lockfile.h
         src/lib/lockfile/lockfile.c
         src/lib/log/logger.h
@@ -38,8 +38,8 @@ add_executable(clientd_i
 
 add_executable(clientd_o
         src/clientd/responder/clientd_o.c
-        src/clientd/broker_connector/broker_connector.h
-        src/clientd/broker_connector/broker_connector.c
+        src/common/broker_connector/broker_connector.h
+        src/common/broker_connector/broker_connector.c
         src/lib/lockfile/lockfile.h
         src/lib/lockfile/lockfile.c
         src/lib/log/logger.h
@@ -84,6 +84,21 @@ add_executable(broker
         src/lib/log/logger.c
         src/common/common.h)
 
+add_executable(next_broker_connector
+        src/broker/broker_chain/next_broker_connector.c
+        src/broker/broker_chain/next_broker_connector.h
+        src/common/common.h
+        src/common/broker_connector/broker_connector.h
+        src/common/broker_connector/broker_connector.c
+        src/lib/msg.h
+        src/lib/msg.c
+        src/lib/logger.h
+        src/lib/logger.c
+        src/lib/lockfile/lockfile.h
+        src/lib/lockfile/lockfile.c
+        src/lib/log/logger.h
+        src/lib/log/logger.c)
+
 add_executable(broker_i
         src/broker/receiver/broker_receiver.h
         src/broker/receiver/broker_receiver.c
@@ -116,20 +131,6 @@ add_executable(worker
         src/common/common.h
         src/broker/db/db.h
         src/broker/db/db.c
-        src/lib/msg.h
-        src/lib/msg.c
-        src/lib/logger.h
-        src/lib/logger.c
-        src/lib/lockfile/lockfile.h
-        src/lib/lockfile/lockfile.c
-        src/lib/log/logger.h
-        src/lib/log/logger.c)
-
-add_executable(testing
-        src/broker/main.c
-        src/broker/db/db.h
-        src/broker/db/db.c
-        src/common/common.h
         src/lib/msg.h
         src/lib/msg.c
         src/lib/logger.h

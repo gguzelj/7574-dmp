@@ -11,9 +11,12 @@ int new_broker_id();
 
 void init_db();
 
-int main() {
-    init_broker();
+void start_next_broker_connector();
+
+int main(int argc, char **argv) {
+    init_broker(argc, argv);
     start_workers();
+    start_next_broker_connector();
     while (config.running) {
         safelog("waiting for new connections");
         int fd = accept_new_connection();
@@ -36,17 +39,29 @@ void start_workers() {
     }
 }
 
+void start_next_broker_connector() {
+    char chain_queue[10], broker_id[10];
+    COPY(chain_queue, BROKER_CHAIN_QUEUE);
+    COPY(broker_id, config.brokerId);
+    if (fork() == 0) {
+        safelog("initing next worker connector");
+        execl("./next_broker_connector", "./next_broker_connector", chain_queue, broker_id, NULL);
+        exit(EXIT_FAILURE);
+    }
+}
+
 void create_new_connection_handlers(int client_socket) {
-    char socket[10], receive_queue[10], response_queue[10], broker_id[3];
+    char socket[10], receive_queue[10], response_queue[10], broker_id[3], chain_queue[10];
     COPY(socket, client_socket);
     COPY(receive_queue, BROKER_RECEIVE_QUEUE);
     COPY(response_queue, BROKER_RESPONSE_QUEUE);
+    COPY(chain_queue, BROKER_CHAIN_QUEUE);
     COPY(broker_id, new_broker_id());
 
     int receiverFd = fork();
     if (receiverFd == 0) {
         safelog("launching broker connection receiver...");
-        execl("./broker_i", "./broker_i", socket, receive_queue, broker_id, NULL);
+        execl("./broker_i", "./broker_i", socket, receive_queue, broker_id, chain_queue, NULL);
         exit(EXIT_FAILURE);
     }
 
@@ -59,10 +74,10 @@ void create_new_connection_handlers(int client_socket) {
 }
 
 
-void init_broker() {
+void init_broker(int argc, char **argv) {
     srand(time(NULL));
     init_logger("broker server");
-    fill_config();
+    fill_config(argc, argv);
     create_queue(BROKER_RECEIVE_QUEUE);
     create_queue(BROKER_RESPONSE_QUEUE);
     create_socket();
@@ -72,7 +87,7 @@ void init_broker() {
     init_db();
 }
 
-void fill_config() {
+void fill_config(int argc, char **argv) {
     config.running = true;
     config.port = BROKER_LISTENING_PORT;
     config.capacity = BROKER_CAPACITY;
@@ -80,6 +95,7 @@ void fill_config() {
     config.address.sin_addr.s_addr = INADDR_ANY;
     config.address.sin_port = htons(config.port);
     config.workerId = 1;
+    config.brokerId = atoi(argv[0]);
 }
 
 void create_socket() {

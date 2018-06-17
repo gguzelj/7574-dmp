@@ -15,9 +15,9 @@
 
 void start_workers();
 
-void init_broker();
+void init_broker(int argc, char **argv);
 
-void fill_config();
+void fill_config(int argc, char **argv);
 
 void create_socket();
 

@@ -21,8 +21,8 @@ void init_responder(int argc, char **argv) {
     config.running = true;
     config.clientFd = atoi(argv[1]);
     config.responseQueue = get_msg(atoi(argv[2]));
-    config.brokerId.value = atoi(argv[3]);
-    safelog("responder id %ld", config.brokerId);
+    config.brokerDaemonId.value = atoi(argv[3]);
+    safelog("responder id %ld", config.brokerDaemonId);
     DEFINE_RESPONSE_HANDLERS
 }
 
@@ -65,7 +65,7 @@ void send_response(int fd, response_t *response) {
 
 response_t receive_response() {
     response_t response;
-    receive_msg(config.responseQueue, &response, sizeof(response_t), config.brokerId.value);
+    receive_msg(config.responseQueue, &response, sizeof(response_t), config.brokerDaemonId.value);
     response.mtype = response.context.clientId.value;
     return response;
 }

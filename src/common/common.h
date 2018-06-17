@@ -33,6 +33,7 @@ typedef int bool;
 
 #define BROKER_RECEIVE_QUEUE            6
 #define BROKER_RESPONSE_QUEUE           7
+#define BROKER_CHAIN_QUEUE              8
 #define BROKER_CAPACITY                 100
 #define BROKER_LISTENING_PORT           8000
 #define BROKER_AMOUNT_WORKERS           3
@@ -43,6 +44,8 @@ typedef int bool;
 #define BROKER_DB_CLIENTS_EXT            ".db"
 #define BROKER_DB_BROKERS_FOLDER         "/tmp/brokers/"
 #define BROKER_DB_BROKERS_EXT            ".db"
+#define BROKER_CONFIG_FILE               "/tmp/broker.config"
+#define MAX_BROKER_CLUSTER_NODES         100
 
 #define TOPIC_FILE(filename, topicName)                 \
             strcpy(filename, BROKER_DB_TOPIC_FOLDER);   \
@@ -109,6 +112,7 @@ typedef struct request {
     long mtype;
     context_t context;
     enum RequestType type;
+    int broker_id;
     union {
         publishRequest_t publish;
         subscribeRequest_t subscribe;
@@ -183,7 +187,10 @@ typedef struct brokerConfig {
     struct sockaddr_in address;
     int receiveQueue;
     int responseQueue;
-    brokerId_t brokerId;
+    int chainQueue;
+    brokerId_t brokerDaemonId;
+    int brokerId;
+    int chainBrokerFd;
     int workerId;
 } brokerConfig;
 

@@ -51,7 +51,9 @@ void publishHandler(request_t request) {
     //dispatch to others...
     dispatch(request.body.publish.topic, request.body.publish.message);
 
-    send_msg(config.responseQueue, &publishResponse, sizeof(response_t));
+    if (request.broker_id == 0) {
+        send_msg(config.responseQueue, &publishResponse, sizeof(response_t));
+    }
 }
 
 void subscribeHandler(request_t request) {

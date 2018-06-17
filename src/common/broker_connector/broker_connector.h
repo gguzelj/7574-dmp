@@ -2,7 +2,7 @@
 #define INC_7574_DMP_BROKER_CONNECTOR_H
 
 #include <stdlib.h>
-#include "../../common/common.h"
+#include "../common.h"
 #include <stdio.h>
 #include <sys/socket.h>
 #include <netinet/in.h>

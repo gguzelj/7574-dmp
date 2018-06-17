@@ -20,8 +20,9 @@ void init_receiver(int argc, char **argv) {
     config.running = true;
     config.clientFd = atoi(argv[1]);
     config.receiveQueue = get_msg(atoi(argv[2]));
-    config.brokerId.value = atoi(argv[3]);
-    safelog("receiver id %ld", config.brokerId);
+    config.brokerDaemonId.value = atoi(argv[3]);
+    config.chainQueue = get_msg(atoi(argv[4]));
+    safelog("receiver id %ld", config.brokerDaemonId);
     DEFINE_REQUEST_HANDLERS
 }
 
@@ -37,6 +38,7 @@ void createHandler(request_t request) {
 void publishHandler(request_t request) {
     safelog("publish: topic %s for client %ld", request.body.publish.topic.name, request.context.clientId);
     send_msg(config.receiveQueue, &request, sizeof(request_t));
+    send_msg(config.chainQueue, &request, sizeof(request_t));
 }
 
 void subscribeHandler(request_t request) {
@@ -60,7 +62,7 @@ request_t receive_request() {
     do {
         received += recv(config.clientFd, &buffer[received], sizeof(request_t) - received, 0);
     } while (received < sizeof(request_t));
-    request.context.brokerId = config.brokerId;
-    request.mtype = config.brokerId.value;
+    request.context.brokerId = config.brokerDaemonId;
+    request.mtype = config.brokerDaemonId.value;
     return request;
 }
