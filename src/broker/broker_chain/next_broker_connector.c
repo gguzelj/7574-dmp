@@ -7,7 +7,7 @@ bool is_connection_established();
 
 void find_next_broker(char *nextBroker);
 
-void fill_with_configfile(char **config);
+void fill_with_configfile(char config[MAX_BROKER_CLUSTER_NODES][100]);
 
 int main(int argc, char **argv) {
     init_connector(argc, argv);
@@ -60,29 +60,29 @@ bool is_connection_established() {
 }
 
 void find_next_broker(char *nextBroker) {
-    char *configFile[MAX_BROKER_CLUSTER_NODES];
+    char configFile[MAX_BROKER_CLUSTER_NODES][100];
     fill_with_configfile(configFile);
-    int configIndex = 0;
-    if (config.brokerId != MAX_BROKER_CLUSTER_NODES && strcmp(configFile[config.brokerId + 1], NULL) != 0) {
-        configIndex = config.brokerId + 1;
+    if ((config.brokerId + 1) == MAX_BROKER_CLUSTER_NODES || strcmp(configFile[config.brokerId + 1], "\0") == 0) {
+        strcpy(nextBroker, configFile[0]);
+        return;
     }
-    strcpy(nextBroker, configFile[configIndex]);
+    strcpy(nextBroker, configFile[config.brokerId + 1]);
 }
 
-void fill_with_configfile(char **config) {
+void fill_with_configfile(char config[MAX_BROKER_CLUSTER_NODES][100]) {
     FILE *fd = fopen(BROKER_CONFIG_FILE, "r");
     if (fd == NULL) {
         exit(EXIT_FAILURE);
     }
     for (int i = 0; i < MAX_BROKER_CLUSTER_NODES; ++i) {
-        config[i] = NULL;
+        strcpy(config[i], "\0");
     }
     char *line = NULL;
     size_t len = 0;
     while (getline(&line, &len, fd) != -1) {
         char *id = strtok(line, ":");
         char *rest = strtok(NULL, "");
-        config[atoi(id)] = rest;
+        strcpy(config[atoi(id)], rest);
     }
     fclose(fd);
 }
