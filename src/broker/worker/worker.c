@@ -71,7 +71,6 @@ void receiveHandler(request_t request) {
 
 void destroyHandler(request_t request) {
     safelog("destroy: for client %ld", request.context.clientId);
-    safelog("subscribe: on topic %s for client %ld", request.body.subscribe.topic.name, request.context.clientId);
     response_t destroyResponse = copy_request_to_response(request);
     destroyResponse.status.code = OK;
 
