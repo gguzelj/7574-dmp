@@ -80,6 +80,7 @@ void init_broker(int argc, char **argv) {
     fill_config(argc, argv);
     create_queue(BROKER_RECEIVE_QUEUE);
     create_queue(BROKER_RESPONSE_QUEUE);
+    create_queue(BROKER_CHAIN_QUEUE);
     create_socket();
     bind_socket();
     listen_socket();

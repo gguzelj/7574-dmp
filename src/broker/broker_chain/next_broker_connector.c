@@ -15,6 +15,7 @@ int main(int argc, char **argv) {
         request_t request = receive_request();
         if (request.type != PUBLISH) {
             safelog("This process only publishes messages to next broker!!");
+            continue;
         }
         dispatch_to_next_broker(request);
     } while (config.running);
@@ -22,7 +23,7 @@ int main(int argc, char **argv) {
 }
 
 void init_connector(int argc, char **argv) {
-    init_logger("broker connector");
+    init_logger("broker chain connector");
     config.running = true;
     config.chainQueue = get_msg(atoi(argv[1]));
     config.brokerId = atoi(argv[2]);
@@ -37,6 +38,7 @@ request_t receive_request() {
 
 void dispatch_to_next_broker(request_t request) {
     if (is_connection_established() == true && config.brokerId != request.broker_id) {
+        request.broker_id = config.brokerId;
         send_request(config.chainBrokerFd, &request);
     }
 }
