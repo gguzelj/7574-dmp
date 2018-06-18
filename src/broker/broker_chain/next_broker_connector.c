@@ -84,7 +84,7 @@ void fill_with_configfile(char config[MAX_BROKER_CLUSTER_NODES][100]) {
     while (getline(&line, &len, fd) != -1) {
         char *id = strtok(line, ":");
         char *rest = strtok(NULL, "");
-        strcpy(config[atoi(id)], rest);
+        strcpy(config[atoi(id)], strlen(rest) - 1);
     }
     fclose(fd);
 }
