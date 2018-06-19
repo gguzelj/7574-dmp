@@ -19,7 +19,6 @@ int main(int argc, char **argv) {
         }
         dispatch_to_next_broker(request);
     } while (config.running);
-    return EXIT_SUCCESS;
 }
 
 void init_connector(int argc, char **argv) {
@@ -27,7 +26,6 @@ void init_connector(int argc, char **argv) {
     config.running = true;
     config.chainQueue = get_msg(atoi(argv[1]));
     config.brokerId = atoi(argv[2]);
-    config.chainBrokerFd = 0;
 }
 
 request_t receive_request() {
@@ -77,7 +75,7 @@ void fill_with_configfile(char config[MAX_BROKER_CLUSTER_NODES][100]) {
         exit(EXIT_FAILURE);
     }
     for (int i = 0; i < MAX_BROKER_CLUSTER_NODES; ++i) {
-        strcpy(config[i], "\0");
+        bzero(config[i], 100);
     }
     char *line = NULL;
     size_t len = 0;
