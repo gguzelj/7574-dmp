@@ -11,7 +11,7 @@ void fill_with_configfile(char config[MAX_BROKER_CLUSTER_NODES][100]);
 
 int main(int argc, char **argv) {
     init_connector(argc, argv);
-    safelog("broker connector ready");
+    safelog("broker connector with id %d ready", config.brokerId);
     do {
         request_t request = receive_request();
         if (request.type != PUBLISH) {
@@ -27,6 +27,7 @@ void init_connector(int argc, char **argv) {
     config.running = true;
     config.chainQueue = get_msg(atoi(argv[1]));
     config.brokerId = atoi(argv[2]);
+    config.brokerId = 0;
 }
 
 request_t receive_request() {
@@ -38,6 +39,7 @@ request_t receive_request() {
 void dispatch_to_next_broker(request_t request) {
     if (is_connection_established() == true && config.brokerId != request.broker_id) {
         request.broker_id = config.brokerId;
+        safelog("dispatching message to next broker");
         send_request(config.chainBrokerFd, &request);
     }
 }
