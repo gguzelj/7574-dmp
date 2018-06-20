@@ -38,6 +38,7 @@ void createHandler(request_t request) {
 void publishHandler(request_t request) {
     safelog("publish: topic %s for client %ld", request.body.publish.topic.name, request.context.clientId);
     send_msg(config.receiveQueue, &request, sizeof(request_t));
+    safelog("publishing on next broker...");
     send_msg(config.chainQueue, &request, sizeof(request_t));
 }
 

@@ -11,6 +11,7 @@ void fill_with_configfile(char config[MAX_BROKER_CLUSTER_NODES][100]);
 
 int main(int argc, char **argv) {
     init_connector(argc, argv);
+    safelog("broker connector ready");
     do {
         request_t request = receive_request();
         if (request.type != PUBLISH) {
@@ -51,6 +52,7 @@ bool is_connection_established() {
     }
     char next_broker[10];
     find_next_broker(next_broker);
+    safelog("no connection established with next broker %s", next_broker);
     config.chainBrokerFd = create_broker_socket(next_broker, BROKER_LISTENING_PORT);
     if (config.chainBrokerFd < 0) {
         safelog("impossible to connect with next broker %s", next_broker);
