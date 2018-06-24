@@ -56,7 +56,7 @@ bool is_connection_established() {
     }
     char next_broker[10];
     find_next_broker(next_broker);
-    safelog("no connection established with next broker %s", next_broker);
+    safelog("no connection established with next broker %s.", next_broker);
     config.chainBrokerFd = create_broker_socket(next_broker, BROKER_LISTENING_PORT);
     if (config.chainBrokerFd < 0) {
         safelog("impossible to connect with next broker %s", next_broker);
