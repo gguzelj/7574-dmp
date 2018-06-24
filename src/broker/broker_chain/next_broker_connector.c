@@ -27,7 +27,7 @@ void init_connector(int argc, char **argv) {
     config.running = true;
     config.chainQueue = get_msg(atoi(argv[1]));
     config.brokerId = atoi(argv[2]);
-    config.brokerId = 0;
+    config.chainBrokerFd = 0;
 }
 
 request_t receive_request() {
@@ -37,6 +37,7 @@ request_t receive_request() {
 }
 
 void dispatch_to_next_broker(request_t request) {
+    safelog("new request to send...");
     if (is_connection_established() == true && config.brokerId != request.broker_id) {
         request.broker_id = config.brokerId;
         safelog("dispatching message to next broker");
@@ -50,6 +51,7 @@ void dispatch_to_next_broker(request_t request) {
  */
 bool is_connection_established() {
     if (config.chainBrokerFd > 0) {
+        safelog("connection already established");
         return true;
     }
     char next_broker[10];
@@ -76,6 +78,7 @@ void find_next_broker(char *nextBroker) {
 void fill_with_configfile(char config[MAX_BROKER_CLUSTER_NODES][100]) {
     FILE *fd = fopen(BROKER_CONFIG_FILE, "r");
     if (fd == NULL) {
+        safelog("error while opening config file");
         exit(EXIT_FAILURE);
     }
     for (int i = 0; i < MAX_BROKER_CLUSTER_NODES; ++i) {
