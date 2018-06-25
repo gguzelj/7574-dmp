@@ -96,7 +96,7 @@ void fill_config(int argc, char **argv) {
     config.address.sin_addr.s_addr = INADDR_ANY;
     config.address.sin_port = htons(config.port);
     config.workerId = 1;
-    config.brokerId = atoi(argv[0]);
+    config.brokerId = atoi(argv[1]);
 }
 
 void create_socket() {
