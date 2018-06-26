@@ -21,7 +21,7 @@
 /* Bool definition */
 typedef int bool;
 #define true        1
-#define false       0
+#define false       2
 
 #define CLIENT_SERVICE_REQUEST_QUEUE    1
 #define CLIENT_SERVICE_RESPONSE_QUEUE   2
