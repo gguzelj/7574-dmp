@@ -19,6 +19,7 @@ int main(int argc, char **argv) {
             continue;
         }
         dispatch_to_next_broker(request);
+        safelog("another round...");
     } while (config.running);
     safelog("EXIT");
 }
