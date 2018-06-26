@@ -72,7 +72,7 @@ request_t build_publish_request(clientId_t id, topic_t topic, message_t message)
     publishRequest.context.clientId = id;
     publishRequest.body.publish.topic = topic;
     publishRequest.body.publish.message = message;
-    publishRequest.broker_id = 0;
+    publishRequest.broker_id = -1;
     return publishRequest;
 }
 

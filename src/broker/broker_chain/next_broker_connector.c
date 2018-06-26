@@ -20,6 +20,7 @@ int main(int argc, char **argv) {
         }
         dispatch_to_next_broker(request);
     } while (config.running);
+    safelog("EXIT");
 }
 
 void init_connector(int argc, char **argv) {
@@ -37,7 +38,7 @@ request_t receive_request() {
 }
 
 void dispatch_to_next_broker(request_t request) {
-    safelog("publish: topic %s. My id: %ld. Request broker id: %ld", request.body.publish.topic.name, config.brokerId, request.broker_id);
+    safelog("publish: topic %s. My id: %ld. Request broker id: %d", request.body.publish.topic.name, config.brokerId, request.broker_id);
     if (is_connection_established() == true && config.brokerId != request.broker_id) {
         request.broker_id = config.brokerId;
         safelog("dispatching message to next broker");
