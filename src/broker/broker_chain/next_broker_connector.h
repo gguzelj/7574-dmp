@@ -2,6 +2,8 @@
 #define INC_7574_DMP_NEXT_BROKER_CONNECTOR_H
 
 #include <stdlib.h>
+
+#include "../../common/broker_connector/broker_connector.h"
 #include "../../lib/lockfile/lockfile.h"
 #include "../../lib/log/logger.h"
 #include "../../common/common.h"

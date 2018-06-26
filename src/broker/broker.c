@@ -44,8 +44,8 @@ void start_next_broker_connector() {
     COPY(chain_queue, BROKER_CHAIN_QUEUE);
     COPY(broker_id, config.brokerId);
     if (fork() == 0) {
-        safelog("initing next worker connector");
-        execl("./next_broker_connector", "./next_broker_connector", chain_queue, broker_id, NULL);
+        safelog("starting next worker connector");
+        execl("./next_broker", "./next_broker", chain_queue, broker_id, NULL);
         exit(EXIT_FAILURE);
     }
 }

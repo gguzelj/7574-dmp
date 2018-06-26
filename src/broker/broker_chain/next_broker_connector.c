@@ -1,5 +1,4 @@
 #include "next_broker_connector.h"
-#include "../../common/broker_connector/broker_connector.h"
 
 void dispatch_to_next_broker(request_t request);
 
@@ -12,6 +11,7 @@ void fill_with_configfile(char config[MAX_BROKER_CLUSTER_NODES][100]);
 int main(int argc, char **argv) {
     init_connector(argc, argv);
     safelog("broker connector with id %d ready", config.brokerId);
+    safelog("arguments received: %s %s", argv[1], argv[2]);
     do {
         request_t request = receive_request();
         if (request.type != PUBLISH) {
@@ -37,11 +37,12 @@ request_t receive_request() {
 }
 
 void dispatch_to_next_broker(request_t request) {
-    safelog("new request to send...");
+    safelog("publish: topic %s for client %ld", request.body.publish.topic.name, request.context.clientId);
     if (is_connection_established() == true && config.brokerId != request.broker_id) {
         request.broker_id = config.brokerId;
         safelog("dispatching message to next broker");
         send_request(config.chainBrokerFd, &request);
+        safelog("request sent");
     }
 }
 
@@ -62,6 +63,7 @@ bool is_connection_established() {
         safelog("impossible to connect with next broker %s", next_broker);
         return false;
     }
+    safelog("succesfull connection with broker. fd: %d", config.chainBrokerFd);
     return true;
 }
 
