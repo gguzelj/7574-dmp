@@ -84,7 +84,7 @@ add_executable(broker
         src/lib/log/logger.c
         src/common/common.h)
 
-add_executable(next_broker_connector
+add_executable(next_broker
         src/broker/broker_chain/next_broker_connector.c
         src/broker/broker_chain/next_broker_connector.h
         src/common/common.h
