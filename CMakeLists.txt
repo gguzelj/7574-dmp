@@ -53,7 +53,7 @@ add_executable(clientd_o
         src/clientd/id_mapper/id_mapper.h
         src/clientd/id_mapper/id_mapper.c)
 
-add_executable(aaaaa
+add_executable(client
         src/client/main.c
         src/clientd/client.h
         src/clientd/client.c
