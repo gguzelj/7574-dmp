@@ -2,7 +2,6 @@
 #define INC_7574_DMP_DB_H
 
 #include <memory.h>
-#include <zconf.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "../../common/common.h"

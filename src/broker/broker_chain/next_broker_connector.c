@@ -41,7 +41,9 @@ request_t receive_request() {
 void dispatch_to_next_broker(request_t request) {
     safelog("publish: topic %s. My id: %ld. Request broker id: %d", request.body.publish.topic.name, config.brokerId, request.broker_id);
     if (is_connection_established() == true && config.brokerId != request.broker_id) {
-        request.broker_id = config.brokerId;
+        if (request.broker_id == -1) {
+            request.broker_id = config.brokerId;
+        }
         safelog("dispatching message to next broker");
         send_request(config.chainBrokerFd, &request);
         safelog("request sent");
@@ -57,7 +59,7 @@ bool is_connection_established() {
         safelog("connection already established");
         return true;
     }
-    char next_broker[10];
+    char next_broker[100];
     find_next_broker(next_broker);
     safelog("no connection established with next broker %s.", next_broker);
     config.chainBrokerFd = create_broker_socket(next_broker, BROKER_LISTENING_PORT);
