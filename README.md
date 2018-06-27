@@ -22,12 +22,14 @@ Para lograr esto se necesita un archivo de configuración donde se indica que di
 
 N:192.168.12.15
 ```
+<img src="./images/broker_config.png">
 
 ## Uso
 Primero es necesario levantar una instancia de algún broker:
 ```
 ./broker {broker_id}
 ```
+<img src="./images/broker.png">
 
 Donde `{broker_id}` se corresponde al id definido para ese broker en el archivo `/tmp/broker.config`.
 Luego es necesario levantar el proceso daemon del cliente:
@@ -36,12 +38,17 @@ Luego es necesario levantar el proceso daemon del cliente:
 ```
 Donde `{broker_ip}` se corresponde a la ip donde esta el broker funcionando.
 
+<img src="./images/clientd.png">
+
 Por último, tenemos que crear una nueva instancia del cliente que hará uso del broker:
 ```
 ./client
 ```
+<img src="./images/client.png">
 
+En la misma ejecución puede verse una breve introducción de cómo ejecutar el cliente:
 
+<img src="./images/usage.png">
 
 ## Logs
 Los logs pueden verse en el archivo '/tmp/dist_2017.log'.
